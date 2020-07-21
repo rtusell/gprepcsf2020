@@ -1,0 +1,344 @@
+
+<html>
+<head>
+<title>Helicopter Extensions</title>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+
+<script type="text/javascript" src="https://static.codehs.com/gulp/0444eb492be7b35724333daa087b82121c1743cb/chs-js-lib/chs.js"></script>
+
+
+<style>
+canvas {
+    border: 1px solid black;
+    display: inline-block;
+    vertical-align: top;
+}
+
+pre {
+    border: 1px solid black;
+    display: inline-block;
+    width: 400px;
+    height: 500px;
+    background-color: #F5F5F5;
+}
+</style>
+
+</head>
+
+<body>
+<h1>Helicopter Extensions</h1>
+
+
+
+<canvas
+width="400"
+height="500"
+class="codehs-editor-canvas"></canvas>
+<pre id="console"></pre>
+
+<script>
+window.onload = function() {
+
+var obstacles = [];
+var OBSTACLE_WIDTH = 30;
+var OBSTACLE_HEIGHT = 100;
+var NUM_OBSTACLES = 3;
+
+var TERRAIN_WIDTH = 10;
+var MIN_TERRAIN_HEIGHT = 29;
+var MAX_TERRAIN_HEIGHT = 50;
+var top_terrain = [];
+var bottom_terrain = [];
+
+var DELAY = 40;
+var SPEED = 5;
+
+var choppa;
+var CHOPPA_WIDTH = 50;
+var CHOPPA_HEIGHT = 25;
+
+var DUST_RADIUS = 3;
+var DUST_BUFFER = 10;
+var dust = [];
+
+var dx = -SPEED;
+var dy = 0;
+var MAX_DY = 8;
+
+var points = 0;
+var score;
+
+var clicking = false;
+
+function start()
+{
+    chooseDifficulty();
+	setup();
+	setTimer(game, DELAY);
+	mouseDownMethod(moveUp);
+	mouseUpMethod(moveDown);
+}
+
+function chooseDifficulty()
+{
+    var difficulty = readLine("Which difficulty would you like to play on, easy, normal, or hard? ");
+    while(difficulty != "easy" || difficulty != "normal" || difficulty != "hard")
+    {
+        if(difficulty == "easy")
+        {
+            NUM_OBSTACLES--;
+            break;
+        }
+        else if(difficulty == "hard")
+        {
+            NUM_OBSTACLES++;
+            break;
+        }
+        else if(difficulty == "normal")
+        {
+            break;
+        }
+        else
+        {
+            difficulty = readLine("The difficulty you selected is invalid. Which difficulty would you like to play on, easy, normal, or hard?");
+        }
+    }
+}
+
+function setup()
+{
+    setBackgroundColor(Color.black);
+    
+    choppa = new WebImage(ImageLibrary.Objects.helicopter);
+    choppa.setSize(CHOPPA_WIDTH, CHOPPA_HEIGHT);
+    choppa.setPosition(getWidth()/3 - CHOPPA_WIDTH/2, getHeight()/2 - CHOPPA_HEIGHT/2);
+    choppa.setColor(Color.blue);
+    add(choppa);
+    
+    addObstacle();
+    addTerrain();
+    
+    score = new Text("Score is: " + points);
+    score.setPosition(0, score.getHeight());
+    score.setColor(Color.white);
+    add(score);
+}
+
+function game()
+{
+    if(checkWalls()||checkObstacles())
+    {
+        lose();
+        return;
+    }
+    fly();
+    moveObstacle();
+    moveTerrain();
+    moveDust();
+    addDust();
+    points++;
+    updateScore();
+}
+
+function addObstacle()
+{
+    for(var i = 0; i < NUM_OBSTACLES; i++)
+    {
+        var obstacle = new Rectangle(OBSTACLE_WIDTH, OBSTACLE_HEIGHT);
+        obstacle.setPosition(getWidth() + i*(getWidth()/NUM_OBSTACLES), 
+                                             Randomizer.nextInt(MAX_TERRAIN_HEIGHT + 10, getHeight() - OBSTACLE_HEIGHT - MAX_TERRAIN_HEIGHT - 10));
+        obstacle.setColor(Color.green);
+        obstacles.push(obstacle);
+        add(obstacle);
+    } 
+}
+
+function addTerrain()
+{
+    for(var i = 0; i <= 1 + getWidth()/TERRAIN_WIDTH; i++)
+    {
+        var height = Randomizer.nextInt(MIN_TERRAIN_HEIGHT, MAX_TERRAIN_HEIGHT);
+        var topTerrain = new Rectangle(TERRAIN_WIDTH, height);
+        topTerrain.setPosition(TERRAIN_WIDTH * i, 0);
+        topTerrain.setColor(Color.green);
+        top_terrain.push(topTerrain);
+        add(topTerrain);
+        
+        height = Randomizer.nextInt(MIN_TERRAIN_HEIGHT, MAX_TERRAIN_HEIGHT);
+        var bottomTerrain = new Rectangle(TERRAIN_WIDTH, height);
+        bottomTerrain.setPosition(TERRAIN_WIDTH * i, getHeight() - height);
+        bottomTerrain.setColor(Color.green);
+        bottom_terrain.push(bottomTerrain);
+        add(bottomTerrain);
+    }
+}
+
+function moveObstacle()
+{
+    for(var i = 0; i < obstacles.length; i++)
+    {
+        var obstacle = obstacles[i];
+        obstacle.move(dx, 0);
+        if(obstacle.getX() < 0 - OBSTACLE_WIDTH)
+        {
+            obstacle.setPosition(getWidth(), Randomizer.nextInt(MAX_TERRAIN_HEIGHT + 10, getHeight() - OBSTACLE_HEIGHT - MAX_TERRAIN_HEIGHT - 10))
+        }
+    }
+}
+
+function moveTerrain()
+{
+    for(var i = 0; i < top_terrain.length; i++)
+    {
+        var obj = top_terrain[i];
+        obj.move(dx, 0);
+        if(obj.getX() < -TERRAIN_WIDTH)
+        {
+            obj.setPosition(getWidth(), 0);
+        }
+    }
+    
+    for(var i = 0; i < bottom_terrain.length; i++)
+    {
+        var obj = bottom_terrain[i];
+        obj.move(dx, 0);
+        if(obj.getX() < -TERRAIN_WIDTH)
+        {
+            obj.setPosition(getWidth(), getHeight() - obj.getHeight());
+        }
+    }
+}
+
+function fly()
+{
+    choppa.move(0, dy);
+    if(clicking)
+    {
+        dy -= 1;
+        if(dy <= -MAX_DY)
+        {
+            dy = -MAX_DY;
+        }
+    }
+    else
+    {
+        dy += 1;
+        if(dy >= MAX_DY)
+        {
+            dy = MAX_DY;
+        }
+    }
+}
+
+function addDust()
+{
+    var d = new Circle(DUST_RADIUS)
+    d.setPosition(choppa.getX() - DUST_RADIUS, choppa.getY() + DUST_BUFFER);
+    d.setColor(Color.gray);
+    dust.push(d);
+    add(d);
+}
+
+function moveDust()
+{
+    for(var i = 0; i < dust.length; i++)
+    {
+        var d = dust[i];
+        d.move(dx, 0)
+        d.setRadius(d.getRadius() - 0.1);
+        if(d.getX() < 0)
+        {
+            remove(d);
+            dust.remove(i);
+            i--
+        }
+    }
+}
+function updateScore()
+{
+    score.setText("Score is: " + points);
+}
+
+function moveUp()
+{
+    clicking = true;
+}
+
+function moveDown()
+{
+    clicking = false;
+}
+
+function checkWalls()
+{
+    var hitTop = choppa.getY() < 0;
+    var hitBottom = choppa.getY() > getHeight() - CHOPPA_HEIGHT;
+    return hitTop||hitBottom;
+}
+
+function checkObstacles()
+{
+    if(getElementAt(choppa.getX(), choppa.getY()) != null && 
+       getElementAt(choppa.getX(), choppa.getY()) != choppa)
+    {
+        return true;
+    }
+    else if(getElementAt(choppa.getX() + CHOPPA_WIDTH, choppa.getY()) != null && 
+            getElementAt(choppa.getX() + CHOPPA_WIDTH, choppa.getY()) != choppa)
+    {
+        return true;
+    }
+    else if(getElementAt(choppa.getX(), choppa.getY() + CHOPPA_HEIGHT) != null && 
+            getElementAt(choppa.getX(), choppa.getY() + CHOPPA_HEIGHT) != choppa)
+    {
+        return true;
+    }
+    else if(getElementAt(choppa.getX() + CHOPPA_WIDTH, choppa.getY() + CHOPPA_HEIGHT) != null && 
+            getElementAt(choppa.getX() + CHOPPA_WIDTH, choppa.getY() + CHOPPA_HEIGHT) != choppa)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+    
+}
+
+function lose()
+{
+    stopTimer(game);
+    var lost = new Text("You lose.");
+    lost.setPosition(getWidth()/2 - lost.getWidth()/2, getHeight()/2);
+    lost.setColor(Color.red);
+    add(lost);
+    
+    var retry = new Text("Press 'r' to restart.")
+    retry.setPosition(getWidth()/2 - retry.getWidth()/2, getHeight()/2 + retry.getHeight());
+    retry.setColor(Color.red);
+    add(retry);
+    
+    keyDownMethod(restart);
+}
+
+function restart(e)
+{
+    if(e.keyCode == Keyboard.letter('r'))
+    {
+        removeAll();
+        points = 0;
+        setup();
+        setTimer(game, DELAY);
+    }
+}
+
+
+    if (typeof start === 'function') {
+        start();
+    }
+};
+</script>
+
+</body>
+</html>
