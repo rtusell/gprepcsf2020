@@ -82,7 +82,7 @@ function start()
 
 function chooseDifficulty()
 {
-    var difficulty = readLine("Which difficulty would you like to play on, easy, normal, or hard? ");
+    var difficulty = prompt("Which difficulty would you like to play on, easy, normal, or hard? ");
     while(difficulty != "easy" || difficulty != "normal" || difficulty != "hard")
     {
         if(difficulty == "easy")
@@ -101,7 +101,7 @@ function chooseDifficulty()
         }
         else
         {
-            difficulty = readLine("The difficulty you selected is invalid. Which difficulty would you like to play on, easy, normal, or hard?");
+            difficulty = prompt("The difficulty you selected is invalid. Which difficulty would you like to play on, easy, normal, or hard?");
         }
     }
 }
