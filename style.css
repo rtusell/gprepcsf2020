@@ -1,47 +1,29 @@
-.center 
+img.logo
 {
     display : block;
     margin-left: auto;
     margin-right: auto;
 }
-.bigtext 
+
+div.col-sm-3:hover
 {
-    text-align: center;
-    font-family: Arial;
-    font-size: 50px;
-	margin-left:200px;
-	margin-right:200px;
+	filter: drop-shadow(8px 8px 10px gray);
 }
-.mediumtext 
+
+h1
 {
-    font-family: Arial;
-    font-size: 30px;
-	text-align:left;
-	display:block;
-	margin-left:200px;
-	margin-right:200px;
+	font-size: 64px;
 }
-.projects
+
+.list-group-item
 {
-	font-family: Arial;
-	font-size: 20px;
-	text-align:center;
-	display:block;
-}
-.displaygame
-{
-	display:block;
-	margin-left:auto;
-	margin-right:auto;
-}
-.games
-{
-	display:block;
-	margin-left:200px;
-	margin-right:200px;
-	margin-top:10px;
-	margin-bottom:10px;
-	font-family:Arial;
+	background-color:lightblue;
 	font-size:20px;
-	text-align:center;
+	font-weight: bold;
+	
+}
+
+.center-pills 
+{ 
+	display: inline-block; 
 }
