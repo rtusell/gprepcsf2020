@@ -1,0 +1,281 @@
+<html>
+<head>
+
+	<meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+	
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+    <!-- Bootstrap JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+
+	<title>Raza Tic-tac-toe</title>
+	
+	<link rel="stylesheet" type="text/css" href="../style.css">
+	
+	<script type="text/javascript" src="https://static.codehs.com/gulp/0444eb492be7b35724333daa087b82121c1743cb/chs-js-lib/chs.js"></script>
+
+
+	<style>
+	canvas 
+	{
+	    border: 1px solid black;
+	    display: block;
+		margin-left:auto;
+		margin-right:auto;
+	    vertical-align: top;
+	}
+	
+	pre 
+	{
+	    border: 1px solid black;
+	    display: inline-block;
+	    width: 400px;
+	    height: 500px;
+	    background-color: #F5F5F5;
+	}
+	</style>
+
+</head>
+
+<body>
+	<div class="container">
+		<br>
+		<br>
+		<div class="row">
+			<img  class="logo" src = "https://www.gprep.org/uploaded/Website_Redesign_Spring_2016/seal_PMS_282_blue.jpg" width ="200 px">
+		</div>
+		<br>
+		<div class="row">
+			<h1 class="text-center">
+	            Computer Science Fundamentals
+				<br>
+				<small>Summer 2020</small>
+	        </h1>
+		</div>
+		<div class="btn-group btn-group-justified">
+			<a href="../index.html" class="btn btn-primary btn-lg"> <span class="glyphicon glyphicon-home"></span> Home </a>
+			<a href="../helicopter.html" class="btn btn-primary btn-lg"> Helicopter </a>
+			<a href="../tic-tac-toe.html" class="btn btn-primary btn-lg">Tic-tac-toe</a>
+			<a href="../break-out.html" class="btn btn-primary btn-lg">Breakout</a>
+			<a href="../snake.html" class="btn btn-primary btn-lg">Snake</a>
+		</div>
+		<div class="spacer"></div>
+		<canvas 
+		width="400"
+		height="500"
+		class="displaygame"></canvas>
+		
+		<script>
+		window.onload = function() {
+
+			var WIDTH = 400;
+			var HEIGHT = 400;
+			setSize(WIDTH, HEIGHT);
+			
+			var WINNING_LINE_WIDTH = 10;
+			var WINNING_LINE_COLOR = Color.red;
+			
+			var counter = 1;
+			var r = WIDTH/6 - 10;
+			var row;
+			var col;
+			
+			var newGrid = new Grid (3,3);
+			
+			function start(){
+				drawLines();
+				mouseClickMethod(handleClick);
+				newGrid.init(0);
+			}
+			
+			function drawLines(){
+			    var line1 = new Line (WIDTH/3, 0, WIDTH/3, HEIGHT);
+			    add (line1);
+			    var line2 = new Line (2* WIDTH/3, 0, 2* WIDTH/3, HEIGHT);
+			    add (line2);
+			    var line3 = new Line (0, HEIGHT/3, WIDTH, HEIGHT/3);
+			    add (line3);
+			    var line4 = new Line (0, 2*HEIGHT/3, WIDTH, 2*HEIGHT/3);
+			    add (line4);
+			}
+			
+			function handleClick(e){
+			    var x = e.getX();
+			    var y = e.getY();
+			    row = getRowForClick(y);
+			    col = getColForClick(x);
+			    if (counter % 2 != 0 && counter <= 9 && newGrid.get(row,col) == 0){
+			        drawX(row,col);
+			        counter++;
+			    }else if (counter % 2 == 0 && counter <= 9 && newGrid.get(row,col) == 0){
+			        drawO(row,col);
+			        counter++;
+			    }
+			    if (winnerInRow(0)){
+			        drawWinningLine(0);
+			        counter = 10;
+			    }
+			    if (winnerInRow(1)){
+			        drawWinningLine(1);
+			        counter = 10;
+			    }
+			    if (winnerInRow(2)){
+			        drawWinningLine(2);
+			        counter = 10;
+			    }
+			    if (winnerInCol(0)){
+			        drawWinningLine2(0);
+			        counter = 10;
+			    }
+			    if (winnerInCol(1)){
+			        drawWinningLine2(1);
+			        counter = 10;
+			    }
+			    if (winnerInCol(2)){
+			        drawWinningLine2(2);
+			        counter = 10;
+			    }
+			    if (winnerInDownDiagonal()){
+			        var line = new Line (10, 10, WIDTH-10, HEIGHT-10);
+			        line.setColor (WINNING_LINE_COLOR);
+			        line.setLineWidth (WINNING_LINE_WIDTH);
+			        add (line);
+			        counter = 10;
+			    }
+			    if (winnerInUpDiagonal()){
+			        var line = new Line (10, HEIGHT- 10, WIDTH-10, 10);
+			        line.setColor (WINNING_LINE_COLOR);
+			        line.setLineWidth (WINNING_LINE_WIDTH);
+			        add (line);
+			        counter = 10;
+			    }
+			}
+			
+			function getRowForClick(y){
+			    if (y < HEIGHT/3){
+			        return 0;
+			    }
+			    if (y > HEIGHT/3 && y < 2*HEIGHT/3){
+			        return 1;
+			    }
+			    if (y > 2*HEIGHT/3){
+			        return 2;
+			    }
+			}
+			
+			function getColForClick(x){
+			    if (x < WIDTH/3){
+			        return 0;
+			    }
+			    if (x > WIDTH/3 && x < 2*WIDTH/3){
+			        return 1;
+			    }
+			    if (x > 2*WIDTH/3){
+			        return 2;
+			    }
+			}
+			
+			function drawX (row, col){
+			    newGrid.set(row,col, -1);
+			    var x1 = 15 + WIDTH/3 * col;
+			    var y1 = 15 + HEIGHT/3 * row;
+			    var x2 = WIDTH/3 + WIDTH/3 * col - 15;
+			    var y2 = HEIGHT/3 + HEIGHT/3 * row - 15;
+			    var l1 = new Line (x1,y1,x2,y2);
+			    x1 = WIDTH/3 + WIDTH/3 * col - 15;
+			    y1 = 15 + HEIGHT/3 * row;
+			    x2 = 15 + HEIGHT/3 * col;
+			    y2 = HEIGHT/3 + HEIGHT/3 * row - 15;
+			    var l2 = new Line (x1,y1,x2,y2);
+			    add (l2);
+			    add (l1);
+			}
+			
+			function drawO (row, col){
+			    newGrid.set(row,col, 1);
+			    var circle = new Circle (r);
+			    circle.setPosition (HEIGHT/6 + HEIGHT/3 * col, WIDTH/6 + WIDTH/3 * row);
+			    circle.setColor (Color.white);
+			    circle.setBorderColor(Color.black);
+			    circle.setBorderWidth (5);
+			    add (circle);
+			}
+			
+			
+			function winnerInRow(x){
+			    var sum = 0;
+			    for (var i = 0; i < 3; i++){
+			        sum += newGrid.get (x, i);
+			    }
+			    if (Math.abs(sum) == 3){
+			        return true;
+			    }else{
+			        return false;
+			    }
+			}
+			
+			function winnerInCol (y){
+			    var sum = 0;
+			    for (var i = 0; i < 3; i++){
+			        sum += newGrid.get (i, y);
+			    }
+			    if (Math.abs(sum) == 3){
+			        return true;
+			    }else{
+			        return false;
+			    }
+			}
+			
+			function winnerInDownDiagonal(){
+			    var sum = 0;
+			    sum += newGrid.get (0,0);
+			    sum += newGrid.get (1,1);
+			    sum += newGrid.get (2,2);
+			    if (Math.abs(sum) == 3){
+			        return true;
+			    }else{
+			        return false;
+			    }
+			}
+			
+			function winnerInUpDiagonal(){
+			    var sum = 0;
+			    sum += newGrid.get (2,0);
+			    sum += newGrid.get (1,1);
+			    sum += newGrid.get (0,2);
+			    if (Math.abs(sum) == 3){
+			        return true;
+			    }else{
+			        return false;
+			    }
+			}
+			
+			function drawWinningLine (row){
+			    var line = new Line (10, 66.66 + row*133.33, WIDTH-10, 66.66 + row*133.33);
+			    line.setColor (WINNING_LINE_COLOR);
+			    line.setLineWidth (WINNING_LINE_WIDTH);
+			    add (line);
+			}
+			
+			function drawWinningLine2(col){
+			    var line = new Line (66.66 + col*133.33, 10, 66.66 + row*133.33, WIDTH-10);
+			    line.setColor (WINNING_LINE_COLOR);
+			    line.setLineWidth (WINNING_LINE_WIDTH);
+			    add (line);
+			}
+
+			if (typeof start === 'function') {
+			        start();
+			}
+		};
+		</script>
+		<br>
+		<div class="spacer"></div>
+	</div>
+	</body>
+</html>

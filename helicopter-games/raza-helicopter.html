@@ -1,0 +1,324 @@
+<html>
+<head>
+
+	<meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+	
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+    <!-- Bootstrap JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+
+	<title>Raza Helicopter</title>
+	
+	<link rel="stylesheet" type="text/css" href="../style.css">
+	
+	<script type="text/javascript" src="https://static.codehs.com/gulp/0444eb492be7b35724333daa087b82121c1743cb/chs-js-lib/chs.js"></script>
+
+
+	<style>
+	canvas 
+	{
+	    border: 1px solid black;
+	    display: block;
+		margin-left:auto;
+		margin-right:auto;
+	    vertical-align: top;
+	}
+	
+	pre 
+	{
+	    border: 1px solid black;
+	    display: inline-block;
+	    width: 400px;
+	    height: 500px;
+	    background-color: #F5F5F5;
+	}
+	</style>
+
+</head>
+
+<body>
+	<div class="container">
+		<br>
+		<br>
+		<div class="row">
+			<img  class="logo" src = "https://www.gprep.org/uploaded/Website_Redesign_Spring_2016/seal_PMS_282_blue.jpg" width ="200 px">
+		</div>
+		<br>
+		<div class="row">
+			<h1 class="text-center">
+	            Computer Science Fundamentals
+				<br>
+				<small>Summer 2020</small>
+	        </h1>
+		</div>
+
+		<canvas 
+		width="400"
+		height="500"
+		class="displaygame"></canvas>
+		
+		<script>
+			window.onload = function() {
+			var DELAY = 40;
+			var SPEED = 5;
+			var helicopter;
+			var dy = 0;
+			var obstacles = [];
+			var clicking = false;
+			var MAX_DY = 12;
+			var TERRAIN_WIDTH = 10;
+			var MAX_TERRAIN_HEIGHT = 50;
+			var MIN_TERRAIN_HEIGHT = 20;
+			var top_terrain = [];
+			var bottom_terrain = [];
+			var points = 0;
+			var score;
+			var POINTS_PER_ROUND = 5;
+			var DUST_RADIUS = 3;
+			var DUST_BUFFER = 10;
+			var dust = [];
+			var NUM_OBSTACLES = 3;
+			var coin;
+			var NUM_COINS = 0;
+			
+			function start(){
+				setUp();
+				setTimer (beginGame, DELAY);
+				mouseDownMethod (jumpUp);
+				mouseUpMethod (fallDown);
+			}
+			
+			function setUp(){
+			    setBackgroundColor (Color.blue);
+			    helicopter = new WebImage ("https://gprepcsf2020.com/images/helicopter.png");
+			    helicopter.setSize (50,25);
+			    helicopter.setPosition (getWidth()/3, getHeight()/2);
+			    helicopter.setColor (Color.green);
+			    add (helicopter);
+			    
+			    addObstacle();
+			    
+			    addTerrain();
+			    
+			    addCoins();
+			    
+			    score = new Text("0");
+			    score.setColor (Color.white);
+			    score.setPosition (10,30);
+			    add (score);
+			}
+			
+			function beginGame(){
+			    updateScore();
+			    if (hitWall()){
+			        lose();
+			    }
+			    var collider = getCollider();
+			    if (collider != null && collider != helicopter && collider != coin){
+			        lose();
+			        return;
+			    }
+			    if (clicking){
+			        dy -= 1;
+			        if (dy < -MAX_DY){
+			            dy = -MAX_DY;
+			        }
+			    }else{
+			        dy += 1;
+			        if (dy > MAX_DY){
+			            dy = MAX_DY;
+			        }
+			    }
+			    if (points % 1000 == 0){
+			        SPEED *= 1.2;
+			    }
+			    helicopter.move (0, dy);
+			    moveObstacle();
+			    moveTerrain();
+			    moveDust();
+			    addDust();
+			    moveCoins();
+			}
+			
+			function jumpUp (e){
+			    clicking = true;
+			}
+			
+			function fallDown (e){
+			    clicking = false;
+			}
+			
+			function addObstacle(){
+			    for (var i = 0; i < NUM_OBSTACLES; i++){
+			        var obstacle = new Rectangle (30, 100); 
+			        obstacle.setColor (Color.green);
+			        obstacle.setPosition (getWidth() + i * (getWidth()/NUM_OBSTACLES), Randomizer.nextInt (0, getHeight()-100));
+			        obstacles.push(obstacle);
+			        add (obstacle);
+			    }
+			}
+			
+			function moveObstacle(){
+			    for (var i = 0; i < obstacles.length; i++){
+			        var obstacle = obstacles [i];
+			        obstacle.move (-SPEED, 0);
+			        if (obstacle.getX() < 0){
+			            obstacle.setPosition (getWidth(), Randomizer.nextInt (0, getHeight()-100));
+			            add (obstacle);
+			        }
+			    }
+			}
+			
+			function addCoins (){
+			    coin = new Circle (10);
+			    coin.setColor (Color.yellow);
+			    coin.setPosition (getWidth() -50, Randomizer.nextInt (100, 300));
+			    add (coin);
+			}
+			
+			function moveCoins(){
+			    coin.move (-SPEED,0);
+			    if (coin.getX() < 0){
+			        coin.setPosition (getWidth()-50, Randomizer.nextInt(100,300));
+			        add (coin);
+			    }
+			}
+			
+			function hitWall() {
+			    var hit_top = helicopter.getY() < 0;
+			    var hit_bottom = helicopter.getY() + 15 > getHeight();
+			    return hit_top||hit_bottom;
+			}
+			
+			function lose() {
+			    stopTimer (beginGame);
+			    var text = new Text ("YOU LOSE!");
+			    text.setPosition (getWidth()/2 - text.getWidth()/2, getHeight()/2);
+			    text.setColor (Color.red);
+			    add (text);
+			}
+			
+			function getCollider (){
+			    var topLeft = getElementAt (helicopter.getX() - 1, helicopter.getY() - 1);
+			    var topRight = getElementAt (helicopter.getX() + helicopter.getWidth() + 1, helicopter.getY() - 1);
+			    var bottomRight = getElementAt (helicopter.getX() + helicopter.getWidth() + 1, helicopter.getY() + helicopter.getHeight() + 1);
+			    var bottomLeft = getElementAt (helicopter.getX() - 1, helicopter.getY() + helicopter.getHeight() + 1);
+			    if (topLeft != null && topLeft != coin){
+			        return topLeft;
+			    }
+			    if (topRight != null && topRight != coin){
+			        return topRight;
+			    }
+			    if (bottomRight != null && bottomRight != coin){
+			        return bottomRight;
+			    }
+			    if (bottomLeft != null && bottomLeft != coin){
+			        return bottomLeft;
+			    }
+			    if (topLeft == coin){
+			        NUM_COINS += 3;
+			        remove(coin);
+			        return coin;
+			    }
+			    if (topRight == coin){
+			        NUM_COINS += 3;
+			        remove(coin);
+			        return coin;
+			    }
+			    if (bottomRight == coin){
+			        NUM_COINS += 3;
+			        remove(coin);
+			        return coin;
+			    }
+			    if (bottomLeft == coin){
+			        NUM_COINS += 3;
+			        remove(coin);
+			        return coin;
+			    }
+			    return null;
+			}
+			
+			function addTerrain(){
+			    for (var i = 0; i < getWidth()/ TERRAIN_WIDTH; i++){
+			        var terrain = new Rectangle (TERRAIN_WIDTH, Randomizer.nextInt (20,50));
+			        terrain.setPosition (i * TERRAIN_WIDTH, 0);
+			        terrain.setColor (Color.green);
+			        top_terrain.push (terrain);
+			        add (terrain);
+			        
+			        var bottomTerrain = new Rectangle (TERRAIN_WIDTH, Randomizer.nextInt(20,50));
+			        bottomTerrain.setPosition (i * TERRAIN_WIDTH, getHeight()- bottomTerrain.getHeight());
+			        bottomTerrain.setColor (Color.green);
+			        bottom_terrain.push (bottomTerrain);
+			        add (bottomTerrain);
+			    }
+			}
+			
+			function moveTerrain(){
+			    for (var i = 0; i < top_terrain.length; i++){
+			        var object = top_terrain[i];
+			        object.move(-SPEED, 0);
+			        if (object.getX() < -object.getWidth()){
+			            object.setPosition (getWidth(), 0);
+			        }
+			    }
+			    
+			    for (var i = 0; i < bottom_terrain.length; i++){
+			        var object = bottom_terrain[i];
+			        object.move(-SPEED, 0);
+			        if (object.getX() < -object.getWidth()){
+			            object.setPosition (getWidth(), getHeight() - object.getHeight());
+			        }
+			    }
+			}
+			
+			function updateScore(){
+			    points += POINTS_PER_ROUND + NUM_COINS;
+			    score.setText (points);
+			}
+			
+			function addDust (){
+			    var d = new Circle (DUST_RADIUS);
+			    d.setColor (Color.gray);
+			    d.setPosition (helicopter.getX() - d.getWidth(), helicopter.getY() + DUST_BUFFER);
+			    dust.push(d);
+			    add (d);
+			}
+			
+			function moveDust () {
+			    for (var i = 0; i < dust.length; i++){
+			        var object = dust[i];
+			        object.move (-SPEED, 0);
+			        object.setRadius (object.getRadius()- 0.1);
+			        if (object.getX()< 0){
+			            remove(object);
+			            dust.remove(i);
+			            i--;
+			        }
+			        
+			    }
+			}
+			if (typeof start === 'function') {
+        	start();
+    		}
+		};			
+		</script>
+		<br>
+		<div class="btn-group btn-group-justified">
+			<a href="../index.html" class="btn btn-primary btn-lg"> <span class="glyphicon glyphicon-home"></span> Home </a>
+			<a href="../helicopter.html" class="btn btn-primary btn-lg"> Helicopter </a>
+			<a href="../tic-tac-toe.html" class="btn btn-primary btn-lg">Tic-tac-toe</a>
+			<a href="../break-out.html" class="btn btn-primary btn-lg">Breakout</a>
+			<a href="../snake.html" class="btn btn-primary btn-lg">Snake</a>
+		</div>
+		<div class="spacer">
+		</div>
+	</div>
+	</body>
+</html>

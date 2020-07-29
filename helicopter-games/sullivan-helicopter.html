@@ -1,0 +1,649 @@
+<html>
+<head>
+
+	<meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+	
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+    <!-- Bootstrap JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+
+	<title>Sullivan Helicopter</title>
+	
+	<link rel="stylesheet" type="text/css" href="../style.css">
+	
+	<script type="text/javascript" src="https://static.codehs.com/gulp/0444eb492be7b35724333daa087b82121c1743cb/chs-js-lib/chs.js"></script>
+
+
+	<style>
+	canvas 
+	{
+	    border: 1px solid black;
+	    display: block;
+		margin-left:auto;
+		margin-right:auto;
+	    vertical-align: top;
+	}
+	
+	pre 
+	{
+	    border: 1px solid black;
+	    display: inline-block;
+	    width: 400px;
+	    height: 500px;
+	    background-color: #F5F5F5;
+	}
+	</style>
+
+</head>
+
+<body>
+	<div class="container">
+		<br>
+		<br>
+		<div class="row">
+			<img  class="logo" src = "https://www.gprep.org/uploaded/Website_Redesign_Spring_2016/seal_PMS_282_blue.jpg" width ="200 px">
+		</div>
+		<br>
+		<div class="row">
+			<h1 class="text-center">
+	            Computer Science Fundamentals
+				<br>
+				<small>Summer 2020</small>
+	        </h1>
+		</div>
+
+		<canvas 
+		width="400"
+		height="500"
+		class="displaygame"></canvas>
+		
+		<script>
+			window.onload = function() {
+			var DELAY = 40;
+			var SPEED = 5;
+			var MAX_DY = 12;
+			var TERRAIN_WIDTH = 10;
+			var MAX_TERRAIN_HEIGHT = 50;
+			var MIN_TERRAIN_HEIGHT = 20;
+			var POINTS_PER_ROUND = 5;
+			var DUST_RADIUS = 3;
+			var DUST_BUFFER = 10;
+			var NUM_OBSTACLES = 3;
+			
+			var points = 0;
+			var score;
+			var dy = 0;
+			var clicking = false;
+			var Y = 0;
+			var click = false;
+			var click2 = false;
+			
+			var copter;
+			var warning;
+			var obj;
+			var obj2;
+			var menuBack;
+			var pc;
+			var pcBack;
+			var phone;
+			var phoneBack;
+			var obstacle;
+			var box;
+			var textBonus;
+			var box2;
+			var name;
+			var pcOrPhone;
+			var dy2 = 3;
+			var click4 = true;
+			
+			var obstacles = [ ];
+			var top_terrain = [ ];
+			var bottom_terrain = [ ];
+			var dust = [ ];
+			
+			function start()
+			{
+			    menu();
+			    mouseClickMethod(setUp2);
+			
+			}
+			function setUp2(e)
+			{
+			    if(click == false)
+			    {
+			        click = true;
+			        pcOrPhone = prompt("Are you on a cell phone (type Mobile) or a computer (type PC)? ");
+			        if(pcOrPhone == "PC" || pcOrPhone == "Jack's Code ")
+			        {
+			            removeMenu();
+			            setUp();
+			            setTimer(game, DELAY);
+			            keyDownMethod(onKeyDown);
+			            keyUpMethod(onKeyUp);
+			        }
+			        if(pcOrPhone == "Mobile")
+			        {
+			            removeMenu();
+			            setUp();
+			            setTimer(game, DELAY);
+			            mouseDownMethod(onKeyDown);
+			            mouseUpMethod(onKeyUp);
+			        }
+			    }
+			}
+			function setUp()
+			{
+			
+			    setBackgroundColor(Color.black);
+			    copter = new WebImage("https://gprepcsf2020.com/images/helicopter.png");
+			    copter.setSize(55,25);
+			    copter.setPosition(getWidth()/2 - copter.getWidth()/2, getHeight()/2);
+			    copter.setColor(Color.red);
+			    add(copter);
+			    addTerrain();
+			    addObstacles();
+			    
+			    score = new Text("0");
+			    score.setColor(Color.white);
+			    score.setPosition(10, 70);
+			    add(score);
+			}
+			function game()
+			{
+			    
+			    updateScore();
+			    if(getCollider())
+			    {
+			        lose();
+			        return;
+			    }
+			    if(hitWall())
+			    {
+			        lose();
+			        return;
+			    }
+			    if(clicking)
+			    {
+			        dy = dy - 1;
+			        if(dy < -MAX_DY)
+			        {
+			            dy = -MAX_DY;
+			        }
+			    }
+			    else
+			    {
+			        dy = dy + 1;
+			        if(dy > MAX_DY)
+			        {
+			            dy = MAX_DY;
+			        }
+			    }
+			    copter.move(0, dy);
+			    moveObstacles();
+			    moveTerrain();
+			    moveDust();
+			    addDust();
+			    if(points%5000 == 0 && points != 0 && points != 1)
+			    {
+			        SPEED = SPEED * 1.5;
+			    }
+			}
+			function onKeyDown(e)
+			{
+			    if(e.keyCode == Keyboard.UP)
+			    {
+			        remove(warning);
+			        clicking = true;
+			    }
+			    else if(mouseDownMethod)
+			    {
+			        remove(warning);
+			        clicking = true;
+			    }
+			    else
+			    {
+			
+			        remove(warning);
+			        warning = new Text("Not valid key to press", "20pt Arial");
+			        warning.setPosition(getWidth()/2 - warning.getWidth()/2, getHeight());
+			        warning.setColor(Color.white);
+			        add(warning);
+			        
+			    }
+			}
+			function onKeyUp()
+			{
+			    clicking = false;
+			}
+			function addObstacles()
+			{
+			    box2 = new Rectangle(20,20);
+			    box2.setPosition(getWidth(), Randomizer.nextInt(getHeight() - 50, 50));
+			    setTimer(colorChange, 700);
+			    add(box2);
+			    
+			    box = new Rectangle(20,20);
+			    box.setPosition(getWidth(), Randomizer.nextInt(getHeight() - 50, 50));
+			    box.setColor(Color.blue);
+			    add(box);
+			    
+			    for(var i = 0; i < NUM_OBSTACLES; i++)
+			    {
+			        obstacle = new Rectangle(30, getHeight()/4);
+			        obstacle.setColor(Color.red);
+			        obstacle.setPosition(getWidth() + i * getWidth()/NUM_OBSTACLES, Randomizer.nextInt(getHeight() - obstacle.getHeight(), 0));
+			        obstacles.push(obstacle)
+			        add(obstacle);
+			    }
+			}
+			function moveObstacles()
+			{
+			    box.move(-SPEED, 0);
+			    if(box.getX() + box.getWidth() <= 0)
+			    {
+			        box.setPosition(getWidth(), Randomizer.nextInt(getHeight() - 50, 50));
+			    }
+			    box2.move(-SPEED, 0);
+			    if(box2.getX() + box2.getWidth() <= -getWidth())
+			    {
+			        box2.setPosition(getWidth(), Randomizer.nextInt(getHeight() - 50, 50));
+			    }
+			    for(var i = 0; i < obstacles.length; i++)
+			    {
+			        var obstacle = obstacles[i];
+			        obstacle.move(-SPEED, 0);
+			        if(obstacle.getX() + obstacle.getWidth() < 0)
+			        {
+			            obstacle.setPosition(getWidth(), Randomizer.nextInt(getHeight() - obstacle.getHeight(), 0));
+			        }
+			    }
+			}
+			function hitWall()
+			{
+			    var hitTop = copter.getY() < 0;
+			    var hitBottom = copter.getY() + copter.getHeight() > getHeight();
+			    return hitTop || hitBottom;
+			}
+			function lose()
+			{
+			    remove(name);
+			    remove(textBonus);
+			    remove(name);
+			    remove(warning);
+			    stopTimer(game);
+			    remove(name);
+			    var explosion = new Circle(20);
+			    explosion.setPosition(copter.getX() + copter.getWidth()/2, copter.getY() + copter.getHeight()/2);
+			    explosion.setColor(Color.orange);
+			    add(explosion);
+			    remove(warning);
+			    remove(name);
+			    var lost = new Text("Game over! :(", "20pt Arial");
+			    lost.setPosition(getWidth()/2 - lost.getWidth()/2, getHeight()/2);
+			    lost.setColor(Color.white);
+			    add(lost);
+			    var lost2 = new Text("Click anywhere to continue", "20pt Arial");
+			    lost2.setPosition(getWidth()/2 - lost2.getWidth()/2, getHeight()/2 + lost2.getHeight()*2);
+			    lost2.setColor(Color.white);
+			    add(lost2);
+			    score.setPosition(getWidth()/2 - score.getWidth()/2, getHeight()/2 + score.getHeight());
+			    var text33 = new Text("You got a High Score!");
+			    text33.setPosition(getWidth()/2 - text33.getWidth()/2, getHeight()/2 + text33.getHeight()*3);
+			    text33.setColor(Color.white);
+			    if(points >= 5000)
+			    {
+			
+			        add(text33);
+			    }
+			    remove(warning);
+			    click2 = false;
+			    if(pcOrPhone == "PC")
+			    {
+			        mouseClickMethod(setUp3);
+			    }
+			    if(pcOrPhone == "Mobile")
+			    {
+			        mouseUpMethod(setUp3);
+			    }
+			    return;
+			}
+			function setUp3(e)
+			{
+			
+			    if(click2 == false)
+			    {
+			        SPEED = 5;
+			        click2 = true;
+			        points = 0;
+			        score = 0;
+			        dy = 0;
+			        clicking = false;
+			        Y = 0;
+			
+			        if(pcOrPhone == "PC")
+			        {
+			            removeMenu();
+			            setUp();
+			            setTimer(game, DELAY);
+			            keyDownMethod(onKeyDown);
+			            keyUpMethod(onKeyUp);
+			        }
+			        if(pcOrPhone == "Mobile")
+			        {
+			            removeMenu();
+			            setUp();
+			            setTimer(game, DELAY);
+			            mouseDownMethod(onKeyDown);
+			            mouseUpMethod(onKeyUp);
+			        }
+			    }
+			}
+			function getCollider()
+			{
+			    var topLeft = getElementAt(copter.getX() - 1, copter.getY() - 1);
+			    if(topLeft != null && topLeft != box && topLeft != textBonus && topLeft != box2 && topLeft != name)
+			    {
+			        return topLeft;
+			    }
+			    var topRight = getElementAt(copter.getX() + 1 + copter.getWidth(), copter.getY - 1);
+			    if(topRight != null && topRight != box && topRight != textBonus  && topRight != box2 && topRight != name)
+			    {
+			        return topRight;
+			    }
+			    var bottomLeft = getElementAt(copter.getX() - 1, copter.getY() + copter.getHeight() + 1);
+			    if(bottomRight != null && bottomLeft != box && bottomLeft != textBonus  && bottomLeft != box2 && bottomLeft != name)
+			    {
+			        return bottomLeft;
+			    }
+			    var bottomRight = getElementAt(copter.getX() + copter.getWidth() + 1, copter.getY() + copter.getHeight() + 1);
+			    if(bottomRight != null && bottomRight != box && bottomRight != textBonus  && bottomRight != box2 && bottomRight != name)
+			    {
+			        return bottomRight;
+			    }
+			    if(topLeft == box)
+			    {
+			        remove(textBonus);
+			        points = points + 300;
+			        textBonus = new Text("Bonus! +300 ", "30pt Arial Bold");
+			        textBonus.setPosition(getWidth()/2 - textBonus.getWidth()/2, getHeight()/2);
+			        textBonus.setColor(Color.white);
+			        add(textBonus);
+			    }
+			    if(topRight == box)
+			    {
+			        remove(textBonus);
+			        points = points + 300;
+			        textBonus = new Text("Bonus! +300 ", "30pt Arial Bold");
+			        textBonus.setPosition(getWidth()/2 - textBonus.getWidth()/2, getHeight()/2);
+			        textBonus.setColor(Color.white);
+			        add(textBonus);
+			    }
+			    if(bottomLeft == box)
+			    {
+			        remove(textBonus);
+			        points = points + 300;
+			        textBonus = new Text("Bonus! +300 ", "30pt Arial Bold");
+			        textBonus.setPosition(getWidth()/2 - textBonus.getWidth()/2, getHeight()/2);
+			        textBonus.setColor(Color.white);
+			        add(textBonus);
+			    }
+			    if(bottomRight == box)
+			    {
+			        remove(textBonus);
+			        points = points + 300;
+			        textBonus = new Text("Bonus! +300 ", "30pt Arial Bold");
+			        textBonus.setPosition(getWidth()/2 - textBonus.getWidth()/2, getHeight()/2);
+			        textBonus.setColor(Color.white);
+			        add(textBonus);
+			    }
+			    
+			    
+			    if(topLeft == box2)
+			    {
+			        remove(textBonus);
+			        points = points + 1000;
+			        textBonus = new Text("Bonus! +1000 ", "30pt Arial Bold");
+			        name = new Text("Helicopter Hurdle made by Jack Sullivan 7-9-2020", "12pt Arial");
+			        name.setPosition(getWidth()/2 - name.getWidth()/2, getHeight()/2 + name.getHeight()*2);
+			        name.setColor(Color.white);
+			        // add(name);
+			        textBonus.setPosition(getWidth()/2 - textBonus.getWidth()/2, getHeight()/2);
+			        textBonus.setColor(Color.white);
+			        add(textBonus);
+			    }
+			    if(topRight == box2)
+			    {
+			        remove(textBonus);
+			        name = new Text("Helicopter Hurdle made by Jack Sullivan 7-9-2020", "12ptArial");
+			        name.setPosition(getWidth()/2 - name.getWidth()/2, getHeight()/2 + name.getHeight()*2);
+			        name.setColor(Color.white);
+			        // add(name);
+			        points = points + 1000;
+			        textBonus = new Text("Bonus! +1000 ", "30pt Arial Bold");
+			        textBonus.setPosition(getWidth()/2 - textBonus.getWidth()/2, getHeight()/2);
+			        textBonus.setColor(Color.white);
+			        add(textBonus);
+			    }
+			    if(bottomLeft == box2)
+			    {
+			        remove(textBonus);
+			        name = new Text("Helicopter Hurdle made by Jack Sullivan 7-9-2020", "12pt Arial");
+			        name.setPosition(getWidth()/2 - name.getWidth()/2, getHeight()/2 + name.getHeight() *2);
+			        name.setColor(Color.white);
+			        // add(name);
+			        points = points + 1000;
+			        textBonus = new Text("Bonus! +1000 ", "30pt Arial Bold");
+			        textBonus.setPosition(getWidth()/2 - textBonus.getWidth()/2, getHeight()/2);
+			        textBonus.setColor(Color.white);
+			        add(textBonus);
+			    }
+			    if(bottomRight == box2)
+			    {
+			        name = new Text("Helicopter Hurdle made by Jack Sullivan 7-9-2020", "12pt Arial");
+			        name.setPosition(getWidth()/2 - name.getWidth()/2, getHeight()/2 + name.getHeight() *2);
+			        name.setColor(Color.white);
+			        // add(name);        
+			        remove(textBonus);
+			        points = points + 1000;
+			        textBonus = new Text("Bonus! +1000 ", "30pt Arial Bold");
+			        textBonus.setPosition(getWidth()/2 - textBonus.getWidth()/2, getHeight()/2);
+			        textBonus.setColor(Color.white);
+			        add(textBonus);
+			    }
+			    if(box.getX() <= 0)
+			    {
+			        remove(textBonus);
+			    }
+			    if(box.getX() <= 0)
+			    {
+			        remove(textBonus);
+			        remove(name);
+			    }
+			}
+			function addTerrain()
+			{
+			 for(var i = 0; i < getWidth()/TERRAIN_WIDTH; i++)
+			    {
+			        
+			        var terrain = new Rectangle(TERRAIN_WIDTH, Randomizer.nextInt(MAX_TERRAIN_HEIGHT, MIN_TERRAIN_HEIGHT));
+			        terrain.setPosition(TERRAIN_WIDTH * i, Y);
+			        terrain.setColor(Color.green);
+			        top_terrain.push(terrain);        
+			        add(terrain);
+			        
+			
+			        var bottomTerrain = new Rectangle(TERRAIN_WIDTH, Randomizer.nextInt(MAX_TERRAIN_HEIGHT, MIN_TERRAIN_HEIGHT));
+			        bottomTerrain.setPosition(TERRAIN_WIDTH * i, getHeight() - bottomTerrain.getHeight());
+			        bottomTerrain.setColor(Color.green);
+			        bottom_terrain.push(bottomTerrain);
+			        add(bottomTerrain);
+			    }
+			
+			}
+			function moveTerrain()
+			{
+			    obj = new Rectangle(getWidth(), 20);
+			    obj.setColor(Color.red);
+			    obj.setPosition(0 , 0);
+			    add(obj); 
+			    obj2 = new Rectangle(getWidth(), 20);
+			    obj2.setColor(Color.red);
+			    obj2.setPosition(0 , getHeight() - obj2.getHeight());
+			    add(obj2);
+			
+			    for(var i = 0; i < top_terrain.length; i++)
+			    {
+			
+			        var object = top_terrain[i];
+			        object.move(-SPEED, 0); 
+			        object.setColor(Color.red);
+			        if(object.getX() < -object.getWidth())
+			        {
+			            object.setPosition(getWidth(), 0)
+			        }
+			        
+			
+			
+			    }
+			        for(var k = 0; k < bottom_terrain.length; k++)
+			    {
+			
+			        
+			        var object2 = bottom_terrain[k];
+			        object2.move(-SPEED, 0);  
+			        object2.setColor(Color.red);
+			        if(object2.getX() < -object2.getWidth())
+			        {
+			            object2.setPosition(getWidth(), getHeight() - object2.getHeight())
+			        }
+			        
+			
+			
+			    }
+			
+			}
+			function updateScore()
+			{
+			    if(click4 == false)
+			    {
+			        points = 0;
+			    }
+			    
+			    points += POINTS_PER_ROUND;
+			    score.setText("Score: " + points);
+			    if(pcOrPhone == "Jack's Code ")
+			    {
+			        points = points + 10000;
+			    }
+			}
+			function addDust()
+			{
+			    var d = new Circle(DUST_RADIUS);
+			    d.setColor("#cccccc");
+			    d.setPosition(copter.getX() - d.getRadius()*2, copter.getY() + DUST_BUFFER);
+			    dust.push(d);
+			    add(d);
+			}
+			function moveDust()
+			{
+			    for(var k = 0; k < dust.length; k++)
+			    {
+			        var d = dust[k];
+			        d.move(-SPEED, 0);
+			        d.setRadius(d.getRadius() - 0.1)
+			        if(d.getX() <= 0)
+			        {
+			            remove(d);
+			            dust.remove[k];
+			            dust.shift();
+			        }
+			    }
+			}
+			function menu()
+			{
+			    menuBack = new Rectangle(getWidth(), getHeight());
+			    menuBack.setPosition(0, 0);
+			    menuBack.setColor(Color.black);
+			    add(menuBack);
+			    
+			    phoneBack = new Text("Welcome to Helicopter Hurdle", "20pt Arial Bold");
+			    phoneBack.setPosition(getWidth()/2 - phoneBack.getWidth()/2, phoneBack.getHeight()*3);
+			    phoneBack.setColor(Color.red);
+			    add(phoneBack);
+			    
+			    pcBack = new WebImage("https://gprepcsf2020.com/images/helicopter.png");
+			    pcBack.setPosition(getWidth()/2 - 100, getHeight()/2 - 100);
+			    pcBack.setSize(200,100);
+			    add(pcBack);
+			    
+			    pc = new Rectangle(30, getHeight()/4);
+			    pc.setPosition(getWidth(), getHeight() - pc.getHeight()*1.5);
+			    pc.setColor(Color.red);
+			
+			    
+			    setTimer(move, 50);
+			    setTimer(check, 50);
+			
+			    
+			    phone = new Rectangle(30, getHeight()/4);
+			    phone.setPosition(getWidth() - getWidth()/8 *2, getHeight() - getHeight()/3);
+			    phone.setColor(Color.red);
+			
+			    var name = new Text("Helicopter Hurdle created by Jack Sullivan 7-10-2020", "12pt Arial");
+			    name.setPosition(getWidth()/2 - name.getWidth()/2, getHeight() - name.getHeight()  *5);
+			    name.setColor(Color.blue);
+			    add(name);
+			    
+			    var text30 = new Text("Click anywhere to continue", "15pt Arial Bold");
+			    text30.setPosition(getWidth()/2 - text30.getWidth()/2, getHeight() - text30.getHeight() * 5);
+			    text30.setColor(Color.blue);
+			    add(text30);   
+			    add(pc);
+			}
+			
+			function move()
+			{
+			
+			    pc.move(-dy2, 0);
+			
+			}
+			function check()
+			{
+			    if(pc.getX() + pc.getWidth() <= 0)
+			    {
+			        pc.setPosition(getWidth(), Randomizer.nextInt(getHeight() - pc.getHeight(), getHeight() - pc.getHeight()*3));
+			    }
+			}
+			
+			function removeMenu(e)
+			{
+			    removeAll();
+			}
+			function colorChange()
+			{
+			    box2.setColor(Randomizer.nextColor());
+			}
+			if (typeof start === 'function') {
+        	start();
+    		}
+		};			
+		</script>
+		<br>
+		<div class="btn-group btn-group-justified">
+			<a href="../index.html" class="btn btn-primary btn-lg"> <span class="glyphicon glyphicon-home"></span> Home </a>
+			<a href="../helicopter.html" class="btn btn-primary btn-lg"> Helicopter </a>
+			<a href="../tic-tac-toe.html" class="btn btn-primary btn-lg">Tic-tac-toe</a>
+			<a href="../break-out.html" class="btn btn-primary btn-lg">Breakout</a>
+			<a href="../snake.html" class="btn btn-primary btn-lg">Snake</a>
+		</div>
+		<div class="spacer">
+		</div>
+	</div>
+	</body>
+</html>

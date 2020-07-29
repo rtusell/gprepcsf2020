@@ -1,255 +1,281 @@
-
 <html>
 <head>
-<title>Helicopter Extensions</title>
 
-<link rel="stylesheet" type="text/css" href="../style.css">
+	<meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+	
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+    <!-- Bootstrap JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 
-<script type="text/javascript" src="https://static.codehs.com/gulp/0444eb492be7b35724333daa087b82121c1743cb/chs-js-lib/chs.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+
+	<title>Baco-Gavilan Helicopter</title>
+	
+	<link rel="stylesheet" type="text/css" href="../style.css">
+	
+	<script type="text/javascript" src="https://static.codehs.com/gulp/0444eb492be7b35724333daa087b82121c1743cb/chs-js-lib/chs.js"></script>
 
 
-<style>
-canvas {
-    border: 1px solid black;
-    display: inline-block;
-    vertical-align: top;
-}
-
-pre {
-    border: 1px solid black;
-    display: inline-block;
-    width: 400px;
-    height: 500px;
-    background-color: #F5F5F5;
-}
-</style>
+	<style>
+	canvas 
+	{
+	    border: 1px solid black;
+	    display: block;
+		margin-left:auto;
+		margin-right:auto;
+	    vertical-align: top;
+	}
+	
+	pre 
+	{
+	    border: 1px solid black;
+	    display: inline-block;
+	    width: 400px;
+	    height: 500px;
+	    background-color: #F5F5F5;
+	}
+	</style>
 
 </head>
 
 <body>
-<img src = "https://www.gprep.org/uploaded/Website_Redesign_Spring_2016/seal_PMS_282_blue.jpg" height ="200 px" class="center">
-<h1 class="bigtext">
-<u><b>Computer Science Fundamentals</b></u>
-</h1>
-<h1 class="bigtext">Helicopter</h1>
-<h1 class="projects"> by Luis Baco Gavilan </h1>
+	<div class="container">
+		<br>
+		<br>
+		<div class="row">
+			<img  class="logo" src = "https://www.gprep.org/uploaded/Website_Redesign_Spring_2016/seal_PMS_282_blue.jpg" width ="200 px">
+		</div>
+		<br>
+		<div class="row">
+			<h1 class="text-center">
+	            Computer Science Fundamentals
+				<br>
+				<small>Summer 2020</small>
+	        </h1>
+		</div>
+		<div class="btn-group btn-group-justified">
+			<a href="../index.html" class="btn btn-primary btn-lg"> <span class="glyphicon glyphicon-home"></span> Home </a>
+			<a href="../helicopter.html" class="btn btn-primary btn-lg"> Helicopter </a>
+			<a href="../tic-tac-toe.html" class="btn btn-primary btn-lg">Tic-tac-toe</a>
+			<a href="../break-out.html" class="btn btn-primary btn-lg">Breakout</a>
+			<a href="../snake.html" class="btn btn-primary btn-lg">Snake</a>
+		</div>
+		<div class="spacer"></div>
+		<canvas 
+		width="400"
+		height="500"
+		class="displaygame"></canvas>
+		
+		<script>
+			window.onload = function() {
 
+			var delay = 40;
+			var speed = 5;
+			var helicopter;
+			var dy = 0;
+			var obstacles = [];
+			var click = false;
+			var maxDY = 12;
+			var top = [];
+			var bottom = [];
+			var point = 0;
+			var pointIncrease = 1;
+			var score;
+			var bufferZone = 8;
+			var smoke = [];
+			var lives = 3;
+			var number;
+			
+			function start(){
+			create();
+			setTimer(move, delay);
+			mouseDownMethod(goDown);
+			mouseUpMethod(goUp);
+			}
+			function create(){
+			setBackgroundColor(Color.black);
+			helicopter = new WebImage("https://gprepcsf2020.com/images/helicopter.png");
+			helicopter.setSize(40, 20);
+			helicopter.setPosition(getWidth()/3, getHeight()/2);
+			helicopter.setColor(Color.blue);
+			add(helicopter);
+			addObstacle();
+			addTerrain();
+			score = new Text(point);
+			score.setPosition(10, 20);
+			score.setColor(Color.white);
+			add(score);
+			addLives();
+			}
+			function increaseScore(){
+			point += pointIncrease;
+			score.setText(point);
+			}
+			function move (){
+			if(checkforWall()){
+			gameOver();
+			return;
+			}
+			var check = checkforObstacle();
+			if(checkforWall() || check != null && check != helicopter && lives == 1){
+			gameOver();
+			return;
+			}
+			else if(checkforWall() || (check != null && check != helicopter)){
+			stopTimer(move);
+			removeAll();
+			lives--;
+			create();
+			dy = 0;
+			helicopter.setPosition(getWidth()/3, getHeight()/2);
+			setTimer(move, delay);
+			}
+			if(click){
+			dy -= 1;
+			if(dy < -maxDY){
+			    dy = -maxDY;
+			}
+			}
+			else{
+			dy += 1;
+			if(dy > maxDY){
+			    dy = maxDY;
+			}
+			}
+			helicopter.move(0, dy);
+			moveObstacle();
+			moveTerrain();
+			increaseScore();
+			moveDust();
+			addDust();
+			
+			
+			}
+			function goDown(){
+			click = true;
+			}
+			function goUp(){
+			click = false;
+			}
+			function addObstacle(){
+			for(var i = 0; i < 4; i++){
+			var W = Randomizer.nextInt(25, 75);
+			var H = Randomizer.nextInt(10, 100);
+			var obstacle = new Rectangle(W, H);
+			obstacle.setPosition(getWidth() + i*(getWidth()/4), Randomizer.nextInt(0, getHeight() - 100));
+			obstacle.setColor(Randomizer.nextColor());
+			obstacles.push(obstacle);
+			add(obstacle);
+			}
+			}
+			function moveObstacle(){
+			for(var i = 0; i < obstacles.length; i++){
+			var obstacle = obstacles[i];
+			obstacle.move(-speed, 0);
+			if(obstacle.getX() < 0){
+			    obstacle.setPosition(getWidth(), Randomizer.nextInt(0, getHeight() - 100));
+			}
+			}
+			}
+			function checkforWall(){
+			var checkTop = helicopter.getY() < 0;
+			var checkBottom = helicopter.getY() + helicopter.getHeight() > getHeight();
+			return checkTop || checkBottom;
+			}
+			function gameOver(){
+			stopTimer(move);
+			var text = new Text("Game Over! ");
+			text.setPosition(getWidth()/2 - text.getWidth()/2, getHeight()/2);
+			text.setColor(Color.red);
+			add(text);
+			}
+			function checkforObstacle(){
+			var topL = getElementAt(helicopter.getX() - 1, helicopter.getY() -1);
+			if(topL != null){
+			return topL;
+			}
+			var topR = getElementAt(helicopter.getX() + helicopter.getWidth() + 1, helicopter.getY() - 1);
+			if(topR != null){
+			return topR;
+			}
+			var bottomL = getElementAt(helicopter.getX() - 1, helicopter.getY() + helicopter.getHeight() + 1);
+			if(bottomL != null){
+			return bottomL;
+			}
+			var bottomR = getElementAt(helicopter.getX() + helicopter.getWidth() + 1, helicopter.getY() + helicopter.getHeight() + 1);
+			if(bottomR != null){
+			return bottomR;
+			}
+			}
+			function addTerrain(){
+			for(var i = 0; i <= getWidth()/20; i++){
+			var terrainHeight = Randomizer.nextInt(25, 75);
+			var topTerrain = new Rectangle(20, terrainHeight);
+			topTerrain.setPosition(20*i, 0);
+			topTerrain.setColor(Color.orange);
+			top.push(topTerrain);
+			add(topTerrain);
+			var bottomTerrain = new Rectangle(20, terrainHeight);
+			bottomTerrain.setPosition(20*i, getHeight() - bottomTerrain.getHeight());
+			bottomTerrain.setColor(Color.orange);
+			bottom.push(bottomTerrain);
+			add(bottomTerrain);
+			}
+			}
+			function moveTerrain(){
+			for(var i = 0; i < top.length; i++){
+			var moveTop = top[i];
+			moveTop.move(-speed, 0);
+			if(moveTop.getX() < -moveTop.getWidth()){
+			    moveTop.setPosition(getWidth(), 0);
+			}
+			}
+			for(var i = 0; i < bottom.length; i++){
+			var moveBottom = bottom[i];
+			moveBottom.move(-speed, 0);
+			if(moveBottom.getX() < -moveBottom.getWidth()){
+			    moveBottom.setPosition(getWidth(), getHeight() - moveBottom.getHeight());
+			}
+			}
+			}
+			function addDust(){
+			var dust = new Circle(4);
+			dust.setPosition(helicopter.getX() - dust.getWidth(), helicopter.getY() + bufferZone);
+			dust.setColor(Color.white);
+			smoke.push(dust);
+			add(dust);
+			}
+			function moveDust(){
+			for(var i = 0; i < smoke.length; i++){
+			var moveSmoke = smoke[i];
+			moveSmoke.move(-speed, 0);
+			moveSmoke.setRadius(moveSmoke.getRadius() - 0.1);
+			if(moveSmoke.getX() < 0){
+			    remove(moveSmoke);
+			    smoke.remove(i);
+			    i--;
+			}
+			}
+			}
+			function addLives(){
+			remove(number);
+			number = new Text(lives);
+			number.setPosition(370, 20);
+			number.setColor(Color.white);
+			add(number);
+			}
 
-
-<canvas
-width="400"
-height="500"
-class="displaygame"></canvas>
-
-<script>
-window.onload = function() 
-{
-
-var delay = 40;
-var speed = 5;
-var helicopter;
-var dy = 0;
-var obstacles = [];
-var click = false;
-var maxDY = 12;
-var top = [];
-var bottom = [];
-var point = 0;
-var pointIncrease = 1;
-var score;
-var bufferZone = 8;
-var smoke = [];
-var lives = 3;
-var number;
-
-function start(){
-	create();
-	setTimer(move, delay);
-	mouseDownMethod(goDown);
-	mouseUpMethod(goUp);
-}
-function create(){
-    setBackgroundColor(Color.black);
-    helicopter = new WebImage("https://gprepcsf2020.com/images/helicopter.png");
-    helicopter.setSize(40, 20);
-    helicopter.setPosition(getWidth()/3, getHeight()/2);
-    helicopter.setColor(Color.blue);
-    add(helicopter);
-    addObstacle();
-    addTerrain();
-    score = new Text(point);
-    score.setPosition(10, 20);
-    score.setColor(Color.white);
-    add(score);
-    addLives();
-}
-function increaseScore(){
-    point += pointIncrease;
-    score.setText(point);
-}
-function move (){
-    if(checkforWall()){
-        gameOver();
-        return;
-    }
-    var check = checkforObstacle();
-    if(checkforWall() || check != null && check != helicopter && lives == 1){
-        gameOver();
-        return;
-    }
-    else if(checkforWall() || (check != null && check != helicopter)){
-        stopTimer(move);
-        removeAll();
-        lives--;
-        create();
-        dy = 0;
-        helicopter.setPosition(getWidth()/3, getHeight()/2);
-        setTimer(move, delay);
-    }
-    if(click){
-        dy -= 1;
-        if(dy < -maxDY){
-            dy = -maxDY;
-        }
-    }
-    else{
-        dy += 1;
-        if(dy > maxDY){
-            dy = maxDY;
-        }
-    }
-    helicopter.move(0, dy);
-    moveObstacle();
-    moveTerrain();
-    increaseScore();
-    moveDust();
-    addDust();
-
-    
-}
-function goDown(){
-    click = true;
-}
-function goUp(){
-    click = false;
-}
-function addObstacle(){
-    for(var i = 0; i < 4; i++){
-    var W = Randomizer.nextInt(25, 75);
-    var H = Randomizer.nextInt(10, 100);
-    var obstacle = new Rectangle(W, H);
-    obstacle.setPosition(getWidth() + i*(getWidth()/4), Randomizer.nextInt(0, getHeight() - 100));
-    obstacle.setColor(Randomizer.nextColor());
-    obstacles.push(obstacle);
-    add(obstacle);
-    }
-}
-function moveObstacle(){
-    for(var i = 0; i < obstacles.length; i++){
-        var obstacle = obstacles[i];
-        obstacle.move(-speed, 0);
-        if(obstacle.getX() < 0){
-            obstacle.setPosition(getWidth(), Randomizer.nextInt(0, getHeight() - 100));
-        }
-    }
-}
-function checkforWall(){
-    var checkTop = helicopter.getY() < 0;
-    var checkBottom = helicopter.getY() + helicopter.getHeight() > getHeight();
-    return checkTop || checkBottom;
-}
-function gameOver(){
-    stopTimer(move);
-    var text = new Text("Game Over! ");
-    text.setPosition(getWidth()/2 - text.getWidth()/2, getHeight()/2);
-    text.setColor(Color.red);
-    add(text);
-}
-function checkforObstacle(){
-    var topL = getElementAt(helicopter.getX() - 1, helicopter.getY() -1);
-    if(topL != null){
-        return topL;
-    }
-    var topR = getElementAt(helicopter.getX() + helicopter.getWidth() + 1, helicopter.getY() - 1);
-    if(topR != null){
-        return topR;
-    }
-    var bottomL = getElementAt(helicopter.getX() - 1, helicopter.getY() + helicopter.getHeight() + 1);
-    if(bottomL != null){
-        return bottomL;
-    }
-    var bottomR = getElementAt(helicopter.getX() + helicopter.getWidth() + 1, helicopter.getY() + helicopter.getHeight() + 1);
-    if(bottomR != null){
-        return bottomR;
-    }
-}
-function addTerrain(){
-    for(var i = 0; i <= getWidth()/20; i++){
-        var terrainHeight = Randomizer.nextInt(25, 75);
-        var topTerrain = new Rectangle(20, terrainHeight);
-        topTerrain.setPosition(20*i, 0);
-        topTerrain.setColor(Color.orange);
-        top.push(topTerrain);
-        add(topTerrain);
-        var bottomTerrain = new Rectangle(20, terrainHeight);
-        bottomTerrain.setPosition(20*i, getHeight() - bottomTerrain.getHeight());
-        bottomTerrain.setColor(Color.orange);
-        bottom.push(bottomTerrain);
-        add(bottomTerrain);
-    }
-}
-function moveTerrain(){
-    for(var i = 0; i < top.length; i++){
-        var moveTop = top[i];
-        moveTop.move(-speed, 0);
-        if(moveTop.getX() < -moveTop.getWidth()){
-            moveTop.setPosition(getWidth(), 0);
-        }
-    }
-    for(var i = 0; i < bottom.length; i++){
-        var moveBottom = bottom[i];
-        moveBottom.move(-speed, 0);
-        if(moveBottom.getX() < -moveBottom.getWidth()){
-            moveBottom.setPosition(getWidth(), getHeight() - moveBottom.getHeight());
-        }
-    }
-}
-function addDust(){
-    var dust = new Circle(4);
-    dust.setPosition(helicopter.getX() - dust.getWidth(), helicopter.getY() + bufferZone);
-    dust.setColor(Color.white);
-    smoke.push(dust);
-    add(dust);
-}
-function moveDust(){
-    for(var i = 0; i < smoke.length; i++){
-        var moveSmoke = smoke[i];
-        moveSmoke.move(-speed, 0);
-        moveSmoke.setRadius(moveSmoke.getRadius() - 0.1);
-        if(moveSmoke.getX() < 0){
-            remove(moveSmoke);
-            smoke.remove(i);
-            i--;
-        }
-    }
-}
-function addLives(){
-    remove(number);
-    number = new Text(lives);
-    number.setPosition(370, 20);
-    number.setColor(Color.white);
-    add(number);
-}
-
-if (typeof start === 'function') 
-	{
-        start();
-    }
-};
-</script>
-<br>
-<a href="../index.html" class="projects"> Homepage </a>
-</body>
+			if (typeof start === 'function') {
+        	start();
+    		}
+		};			
+		</script>
+		<br>
+		<div class="spacer"></div>
+	</div>
+	</body>
 </html>

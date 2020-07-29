@@ -10,6 +10,12 @@ div.col-sm-3:hover
 	filter: drop-shadow(8px 8px 10px gray);
 }
 
+div.col-sm-4:hover
+{
+	filter: drop-shadow(8px 8px 10px gray);
+}
+
+
 h1
 {
 	font-size: 64px;
@@ -26,4 +32,16 @@ h1
 .center-pills 
 { 
 	display: inline-block; 
+}
+
+.btn-group
+{
+    display : block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.spacer
+{
+	height:20px;
 }

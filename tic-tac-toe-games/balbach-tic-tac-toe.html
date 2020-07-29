@@ -1,0 +1,280 @@
+<html>
+<head>
+
+	<meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+	
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+    <!-- Bootstrap JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+
+	<title>Balbach Tic-tac-toe</title>
+	
+	<link rel="stylesheet" type="text/css" href="../style.css">
+	
+	<script type="text/javascript" src="https://static.codehs.com/gulp/0444eb492be7b35724333daa087b82121c1743cb/chs-js-lib/chs.js"></script>
+
+
+	<style>
+	canvas 
+	{
+	    border: 1px solid black;
+	    display: block;
+		margin-left:auto;
+		margin-right:auto;
+	    vertical-align: top;
+	}
+	
+	pre 
+	{
+	    border: 1px solid black;
+	    display: inline-block;
+	    width: 400px;
+	    height: 500px;
+	    background-color: #F5F5F5;
+	}
+	</style>
+
+</head>
+
+<body>
+	<div class="container">
+		<br>
+		<br>
+		<div class="row">
+			<img  class="logo" src = "https://www.gprep.org/uploaded/Website_Redesign_Spring_2016/seal_PMS_282_blue.jpg" width ="200 px">
+		</div>
+		<br>
+		<div class="row">
+			<h1 class="text-center">
+	            Computer Science Fundamentals
+				<br>
+				<small>Summer 2020</small>
+	        </h1>
+		</div>
+		<div class="btn-group btn-group-justified">
+			<a href="../index.html" class="btn btn-primary btn-lg"> <span class="glyphicon glyphicon-home"></span> Home </a>
+			<a href="../helicopter.html" class="btn btn-primary btn-lg"> Helicopter </a>
+			<a href="../tic-tac-toe.html" class="btn btn-primary btn-lg">Tic-tac-toe</a>
+			<a href="../break-out.html" class="btn btn-primary btn-lg">Breakout</a>
+			<a href="../snake.html" class="btn btn-primary btn-lg">Snake</a>
+		</div>
+		<div class="spacer"></div>
+		<canvas 
+		width="400"
+		height="500"
+		class="displaygame"></canvas>
+		
+		<script>
+		window.onload = function() {
+			var WIDTH = 400;
+			var HEIGHT = 400;
+			setSize(WIDTH, HEIGHT);
+			
+			var WINNING_LINE_WIDTH = 10;
+			var WINNING_LINE_COLOR = Color.red;
+			var turn = 1;
+			
+			var BUFFER = 10;
+			var gameIsRunning;
+			
+			var grid;
+			
+			function start()
+			{
+			    gameIsRunning = true;
+				makeGrid();
+				mouseClickMethod(handleClick);
+			}
+			
+			function makeGrid()
+			{
+			    for(var i = 1; i < 3; i++)
+			    {
+			        var vertical = new Line(i*getWidth()/3, 0, i*getWidth()/3, getHeight());
+			        add(vertical);
+			        
+			        var horizontal = new Line(0, i*getHeight()/3, getWidth(), i*getHeight()/3);
+			        add(horizontal);
+			        
+			        grid = new Grid(3, 3);
+			    }
+			}
+			
+			function handleClick(e)
+			{
+			    if(gameIsRunning)
+			    {
+			        var y = getRowForClick(e.getY());
+			        var x = getColForClick(e.getX());
+			        if(turn % 2 == 1 && getElementAt((x*(getWidth()/3) + (getWidth()/6)), 
+			                                         (y*(getHeight()/3) + (getHeight()/6))) == null)
+			        {
+			            drawX(x, y);
+			            grid.set(x, y, 1);
+			            turn++;
+			        }
+			        else if(turn % 2 == 0 && getElementAt((x*(getWidth()/3) + (getWidth()/6)), 
+			                                              (y*(getHeight()/3) + (getHeight()/6))) == null)
+			        {
+			            drawO(x, y);
+			            grid.set(x, y, 0)
+			            turn++;
+			        }
+			        winnerInCol();
+			        winnerInRow();
+			        winnerInDownDiagonal();
+			        winnerInUpDiagonal();
+			    }
+			}
+			
+			function getRowForClick(y)
+			{
+			    var row = Math.floor(y/(getHeight()/3));
+			    var positionY = row*(getHeight()/3) + (getHeight()/6);
+			    return row;
+			}
+			
+			function getColForClick(x)
+			{
+			    var col = Math.floor(x/(getWidth()/3));
+			    return col;
+			}
+			
+			function drawX(x, y)
+			{
+			    var positive = new Line((x*(getWidth()/3) + (getWidth()/6)) - getWidth()/6 + BUFFER, 
+			                            (y*(getHeight()/3) + (getHeight()/6)) + getHeight()/6 - BUFFER, 
+			                            (x*(getWidth()/3) + (getWidth()/6)) + getWidth()/6 - BUFFER, 
+			                            (y*(getHeight()/3) + (getHeight()/6)) - getHeight()/6 + BUFFER);
+			    add(positive);
+			    
+			    var negative = new Line((x*(getWidth()/3) + (getWidth()/6)) - getWidth()/6 + BUFFER, 
+			                            (y*(getHeight()/3) + (getHeight()/6)) - getHeight()/6 + BUFFER, 
+			                            (x*(getWidth()/3) + (getWidth()/6)) + getWidth()/6 - BUFFER, 
+			                            (y*(getHeight()/3) + (getHeight()/6)) + getHeight()/6 - BUFFER);
+			    add(negative);
+			}
+			
+			function drawO(x, y)
+			{
+			    var blackO = new Circle(getWidth()/6 - BUFFER);
+			    blackO.setPosition((x*(getWidth()/3) + (getWidth()/6)), (y*(getHeight()/3) + (getHeight()/6)));
+			    add(blackO);
+			    
+			    var whiteO = new Circle(getWidth()/6 - BUFFER - 1);
+			    whiteO.setPosition((x*(getWidth()/3) + (getWidth()/6)), (y*(getHeight()/3) + (getHeight()/6)));
+			    whiteO.setColor(Color.white);
+			    add(whiteO);
+			}
+			
+			function winnerInCol()
+			{
+			    for(var i = 0; i < grid.numCols(); i++)
+			    {
+			        var col = [];
+			        for(var j = 0; j < grid.numRows(); j++)
+			        {
+			            col.push(grid.get(i, j));
+			        }
+			        if(col[0] == col[1] && col[0] == col[2] && col[0] != null)
+			        {
+			            drawSlash((i*(getWidth()/3) + (getWidth()/6)), 0, 
+			                      (i*(getWidth()/3) + (getWidth()/6)), getHeight());
+			            gameWin(col[0]);
+			            gameIsRunning = false;
+			            break;
+			        }
+			    }
+			}
+			
+			function winnerInRow()
+			{
+			    for(var i = 0; i < grid.numRows(); i++)
+			    {
+			        var row = [];
+			        for(var j = 0; j < grid.numCols(); j++)
+			        {
+			            row.push(grid.get(j, i));
+			        }
+			        if(row[0] == row[1] && row[0] == row[2] && row[0] != null)
+			        {
+			            drawSlash(0, (i*(getHeight()/3) + (getHeight()/6)),
+			                      getWidth(), (i*(getHeight()/3) + (getHeight()/6)));
+			            gameWin(row[0]);
+			            gameIsRunning = false;
+			            break;
+			        }
+			    }
+			}
+			
+			function winnerInDownDiagonal()
+			{
+			    var diagonal = [];
+			    for(var i = 0; i < 3; i++)
+			    {
+			        diagonal.push(grid.get(i, i))
+			    }
+			    if(diagonal[0] == diagonal[1] && diagonal[0] == diagonal[2] && diagonal[0] != null)
+			    {
+			        drawSlash(0, 0, getWidth(), getHeight());
+			        gameWin(diagonal[0]);
+			        gameIsRunning = false;
+			    }
+			}
+			
+			function winnerInUpDiagonal()
+			{
+			    var diagonal = [];
+			    for(var i = 1; i >= -1; i--)
+			    {
+			        diagonal.push(grid.get((i + 1), (-i + 1)))
+			    }
+			    if(diagonal[0] == diagonal[1] && diagonal[0] == diagonal[2] && diagonal[0] != null)
+			    {
+			        drawSlash(0, getHeight(), getWidth(), 0);
+			        gameWin(diagonal[0]);
+			        gameIsRunning = false;
+			    }
+			}
+			
+			function drawSlash(x1, y1, x2, y2)
+			{
+			    var slash = new Line(x1, y1, x2, y2);
+			    slash.setColor(WINNING_LINE_COLOR);
+			    slash.setLineWidth(WINNING_LINE_WIDTH);
+			    add(slash);
+			}
+			
+			function gameWin(n)
+			{
+			    if(n == 0)
+			    {
+			        var oWin = new Text("O Wins!")
+			        oWin.setPosition(getWidth()/2 - oWin.getWidth()/2, getHeight()/2);
+			        add(oWin);
+			    }
+			    else if(n == 1)
+			    {
+			        var xWin = new Text("X Wins!")
+			        xWin.setPosition(getWidth()/2 - xWin.getWidth()/2, getHeight()/2);
+			        add(xWin);
+			    }
+			}		
+		
+
+			if (typeof start === 'function') {
+			        start();
+			}
+		};
+		</script>
+		<br>
+		<div class="spacer"></div>
+	</div>
+	</body>
+</html>
