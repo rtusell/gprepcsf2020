@@ -1,0 +1,246 @@
+<html>
+<head>
+
+	<meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+	
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+    <!-- Bootstrap JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+
+	<title>Nickerson Snake</title>
+	
+	<link rel="stylesheet" type="text/css" href="../style.css">
+	
+	<script type="text/javascript" src="https://static.codehs.com/gulp/0444eb492be7b35724333daa087b82121c1743cb/chs-js-lib/chs.js"></script>
+
+
+	<style>
+	canvas 
+	{
+	    border: 1px solid black;
+	    display: block;
+		margin-left:auto;
+		margin-right:auto;
+	    vertical-align: top;
+	}
+	
+	pre 
+	{
+	    border: 1px solid black;
+	    display: inline-block;
+	    width: 400px;
+	    height: 500px;
+	    background-color: #F5F5F5;
+	}
+	</style>
+
+</head>
+
+<body>
+	<div class="container">
+		<br>
+		<br>
+		<div class="row">
+			<img  class="logo" src = "https://www.gprep.org/uploaded/Website_Redesign_Spring_2016/seal_PMS_282_blue.jpg" width ="200 px">
+		</div>
+		<br>
+		<div class="row">
+			<h1 class="text-center">
+	            Computer Science Fundamentals
+				<br>
+				<small>Summer 2020</small>
+	        </h1>
+		</div>
+		<div class="btn-group btn-group-justified">
+			<a href="../index.html" class="btn btn-primary btn-lg"> <span class="glyphicon glyphicon-home"></span> Home </a>
+			<a href="../helicopter.html" class="btn btn-primary btn-lg"> Helicopter </a>
+			<a href="../tic-tac-toe.html" class="btn btn-primary btn-lg">Tic-tac-toe</a>
+			<a href="../break-out.html" class="btn btn-primary btn-lg">Breakout</a>
+			<a href="../snake.html" class="btn btn-primary btn-lg">Snake</a>
+		</div>
+		<div class="spacer"></div>
+		<canvas 
+		width="400"
+		height="500"
+		class="displaygame"></canvas>
+		
+		<script>
+		window.onload = function() 
+		{
+
+			// Start with your code from Fun Snake 2
+			var FOOD_DELAY = 6000;
+			var FOOD_RADIUS = 5;
+			var FOOD_COLOR = Color.red;
+			
+			var SNAKE_DIM=10;
+			var SNAKE_COLOR=Color.green;
+			var DELAY=100;
+			
+			var snake;
+			var dx=SNAKE_DIM;
+			var dy=0;
+			var score=0;
+			var scoreText;
+			
+			function start()
+			{
+			    var snake = drawSquare(getWidth()/2 - SNAKE_DIM/2, getHeight()/2 - SNAKE_DIM/2);
+			    setTimer(moveSnake, DELAY);
+			    setTimer(food, FOOD_DELAY);
+			    showScore();
+			}
+			
+			function moveSnake()
+			{
+			    keyDownMethod(userStrokes);
+			    snake.move(dx, dy);
+			    score+=1;
+			    eatFood();
+			    loseGame();
+			    border();
+			    var trail = drawSquare(snake.getX(), snake.getY());
+			}
+			
+			function showScore()
+			{
+			    scoreText = new Text("Score: " +score, "12pt Arial");
+			    scoreText.setPosition(getWidth()/2-scoreText.getWidth()/2, 0+scoreText.getHeight());
+			    scoreText.setColor(Color.black);
+			    add(scoreText);
+			}
+			
+			function eatFood() 
+			{
+			    //East
+			    var elementEast = getElementAt(snake.getX()+ SNAKE_DIM/2 + dx, snake.getY()+ SNAKE_DIM/2 +dy);
+			    if  (elementEast != null && elementEast.getType()=='Circle')
+			    {
+			        remove(elementEast);
+			        score+=100;
+			    }
+			    //West
+			    var elementWest = getElementAt(snake.getX(), snake.getY()+SNAKE_DIM/2);
+			    if (elementWest !=null && elementWest.getType()=='Circle')
+			    {
+			        remove(elementWest);
+			        score+=100;
+			    }
+			    //North
+			    var elementNorth = getElementAt(snake.getX()+SNAKE_DIM/2, snake.getY());
+			    if (elementNorth !=null && elementNorth.getType()=='Circle')
+			    {
+			        remove(elementNorth);
+			        score+=100;
+			    }
+			    //South
+			    var elementSouth = getElementAt(snake.getX()+SNAKE_DIM/2, snake.getY()+SNAKE_DIM);
+			    if (elementSouth !=null && elementSouth.getType()=='Circle')
+			    {
+			        remove(elementSouth);
+			        score+=100;
+			    }
+			    scoreText.setText("Score: " + score);
+			}
+			
+			function loseGame()
+			{
+			    var elem = getElementAt(snake.getX()+ SNAKE_DIM/2 + dx, snake.getY()+ SNAKE_DIM/2 +dy);
+			    if (elem != null && elem.getType()=='Rectangle')
+			    {
+			        stopTimer(moveSnake);
+			        stopTimer(food);
+			        remove(scoreText);
+			        
+			        var loseText = new Text("You lost!", "50pt Arial");
+			        loseText.setPosition(getWidth()/2 - loseText.getWidth()/2, getHeight()/2 + loseText.getHeight()/2);
+			        loseText.setColor(Color.red);
+			        add(loseText);
+			        
+			        var loseScore = new Text("Score: " + score, "25pt Arial");
+			        loseScore.setPosition(getWidth()/2 - loseScore.getWidth()/2, getHeight()/2 +loseScore.getHeight()/2+loseText.getHeight());
+			        loseScore.setColor(Color.red);
+			        add(loseScore);
+			    }
+			}
+			
+			function food()
+			{
+			    var circle = new Circle(FOOD_RADIUS);
+			    circle.setColor(FOOD_COLOR);
+			    var foodX = Randomizer.nextInt(0+FOOD_RADIUS, getWidth()-FOOD_RADIUS);
+			    var foodY = Randomizer.nextInt(0+FOOD_RADIUS, getHeight()-FOOD_RADIUS);
+			    circle.setPosition(foodX, foodY);
+			    add(circle);
+			}
+			
+			function border()
+			{
+			    if (snake.getX() > getWidth())
+			    {
+			        snake.setPosition(0, snake.getY());
+			    }
+			    else if (snake.getX() < 0)
+			    {
+			        snake.setPosition(getWidth(), snake.getY());
+			    }
+			    else if (snake.getY() < 0)
+			    {
+			        snake.setPosition(snake.getX(), getHeight());
+			    }
+			    else if (snake.getY()> getHeight())
+			    {
+			        snake.setPosition(snake.getX(), 0);
+			    }
+			}
+			
+			function userStrokes(e)
+			{
+			    if (e.keyCode == Keyboard.RIGHT)
+			    {
+			        dx=SNAKE_DIM;
+			        dy=0;
+			    }
+			    else if (e.keyCode == Keyboard.LEFT)
+			    {
+			        dx=-SNAKE_DIM;
+			        dy=0;
+			    }
+			    else if (e.keyCode == Keyboard.UP)
+			    {
+			        dx=0;
+			        dy=-SNAKE_DIM;
+			    }
+			    else if (e.keyCode == Keyboard.DOWN)
+			    {
+			        dx=0;
+			        dy=SNAKE_DIM;
+			    }
+			}
+			
+			function drawSquare(x, y)
+			{
+			    snake = new Rectangle(SNAKE_DIM, SNAKE_DIM);
+			    snake.setPosition(x, y);
+			    snake.setColor(SNAKE_COLOR);
+			    add(snake);
+			}
+						
+		    if (typeof start === 'function') 
+			{
+		        start();
+		    }
+		};
+		</script>
+		<br>
+		<div class="spacer"></div>
+	</div>
+	</body>
+</html>
+

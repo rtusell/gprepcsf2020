@@ -1,0 +1,257 @@
+<html>
+<head>
+
+	<meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+	
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+    <!-- Bootstrap JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+
+	<title>Xia Snake</title>
+	
+	<link rel="stylesheet" type="text/css" href="../style.css">
+	
+	<script type="text/javascript" src="https://static.codehs.com/gulp/0444eb492be7b35724333daa087b82121c1743cb/chs-js-lib/chs.js"></script>
+
+
+	<style>
+	canvas 
+	{
+	    border: 1px solid black;
+	    display: block;
+		margin-left:auto;
+		margin-right:auto;
+	    vertical-align: top;
+	}
+	
+	pre 
+	{
+	    border: 1px solid black;
+	    display: inline-block;
+	    width: 400px;
+	    height: 500px;
+	    background-color: #F5F5F5;
+	}
+	</style>
+
+</head>
+
+<body>
+	<div class="container">
+		<br>
+		<br>
+		<div class="row">
+			<img  class="logo" src = "https://www.gprep.org/uploaded/Website_Redesign_Spring_2016/seal_PMS_282_blue.jpg" width ="200 px">
+		</div>
+		<br>
+		<div class="row">
+			<h1 class="text-center">
+	            Computer Science Fundamentals
+				<br>
+				<small>Summer 2020</small>
+	        </h1>
+		</div>
+		<div class="btn-group btn-group-justified">
+			<a href="../index.html" class="btn btn-primary btn-lg"> <span class="glyphicon glyphicon-home"></span> Home </a>
+			<a href="../helicopter.html" class="btn btn-primary btn-lg"> Helicopter </a>
+			<a href="../tic-tac-toe.html" class="btn btn-primary btn-lg">Tic-tac-toe</a>
+			<a href="../break-out.html" class="btn btn-primary btn-lg">Breakout</a>
+			<a href="../snake.html" class="btn btn-primary btn-lg">Snake</a>
+		</div>
+		<div class="spacer"></div>
+		<canvas 
+		width="400"
+		height="500"
+		class="displaygame"></canvas>
+		
+		<script>
+		window.onload = function() 
+		{
+
+			// Copy in your code from Fun Snake 3
+			
+			var POINTS_TEXT_X = 5;
+			var POINTS_TEXT_Y_BUFFER = 5;
+			var POINTS_FONT = "17pt Arial";
+			
+			var FOOD_DELAY = 6000;
+			var FOOD_RADIUS = 5;
+			var FOOD_COLOR = Color.red;
+			
+			var snakeX = getWidth()/2 -5 ;
+			var snakeY = getHeight()/2 - 5;
+			
+			var NORTH = 0;
+			var EAST = 1;
+			var SOUTH = 2;
+			var WEST = 3;
+			var direction = EAST;
+			var dx = 4;
+			var dy = 4;
+			var num;
+			var snake;
+			var snack;
+			var thing;
+			var lost = false;
+			var points = 0;
+			var counter;
+			
+			function start() {
+			    snack = new Circle(5);
+			    snack.setPosition(Randomizer.nextFloat(5, getWidth()-5), Randomizer.nextFloat(5,getHeight()-5));
+			    snack.setColor(Color.red);
+			    add(snack);
+			    setTimer(newFood, 6000);
+			    setTimer(move, 20);
+			    setTimer(point, 20);
+			    point();
+			    
+			    keyDownMethod(keyDown);
+			}
+			
+			function move(){
+			    snake = new Rectangle (10, 10);
+			    snake.setPosition(snakeX, snakeY);
+			    snake.setColor(Color.green);
+			    add(snake);
+			    
+			    if(direction == EAST){    
+			        if(getElementAt(snakeX + 11, snakeY + 5) != null){
+			            thing = getElementAt(snakeX + 11, snakeY + 5);
+			            if(thing.getType() ==  "Rectangle"){
+			                gameOver();
+			            }else if(thing.getType() == "Circle"){
+			                remove(thing);
+			                points += 100;
+			            }
+			        }
+			        if(snakeX+11 > getWidth()){
+			            snakeX = 0;
+			        }
+			        snakeX += dx;
+			        points++;
+			    }else if(direction == WEST){
+			        if(getElementAt(snakeX -1, snakeY + 5) != null){
+			            thing = getElementAt(snakeX -1, snakeY + 5);
+			            if(thing.getType() == "Rectangle"){
+			                gameOver();
+			            }else if(thing.getType() == "Circle"){
+			                remove(thing);
+			                points += 100;
+			            }
+			        }
+			        if(snakeX < 0){
+			            snakeX = getWidth() - 11;
+			        }
+			            
+			            
+			        snakeX -= dx;
+			        points++;
+			    }else if(direction == NORTH){
+			        if(getElementAt(snakeX + 5, snakeY -1) != null){
+			            thing = getElementAt(snakeX + 5, snakeY -1);
+			            if(thing.getType() == "Rectangle"){
+			                gameOver();
+			            }else if(thing.getType() == "Circle"){
+			                remove(thing);
+			                points += 100;
+			            }
+			        }
+			        
+			        if(snakeY < 0){
+			            snakeY = getHeight() -11;
+			        }
+			            
+			            
+			        snakeY -= dy;
+			        points++;
+			    }else if(direction == SOUTH){
+			        if(getElementAt(snakeX + 5, snakeY + 11)!= null){
+			            thing = getElementAt(snakeX + 5, snakeY + 11);
+			            if(thing.getType() == "Rectangle"){
+			                gameOver();
+			            }else if(thing.getType() == "Circle"){
+			                remove(thing);
+			                points += 100;
+			            }
+			        }
+			        if(snakeY + 11 > getHeight()){
+			            snakeY = 0;
+			        }
+			            
+			            
+			        snakeY += dy;
+			        points++;
+			    }
+			}
+			
+			
+			function keyDown(e){
+			    if(e.keyCode == Keyboard.LEFT){
+			        direction = WEST; 
+			        
+			    }
+			    if(e.keyCode == Keyboard.RIGHT){
+			        direction = EAST;
+			    }
+			    if(e.keyCode == Keyboard.DOWN){
+			        direction = SOUTH;
+			    }
+			    if(e.keyCode == Keyboard.UP){
+			        direction = NORTH;
+			        
+			        
+			    }
+			}
+			
+			function gameOver(){
+			    var lose = new Text ("YOU LOSE!!!", "30pt Arial");
+			    
+			    lose.setPosition(getWidth()/2 -100, getHeight()/2 + 20);
+			    add(lose);
+			    
+			    lost = true;
+			    stopTimer(move);
+			}
+			
+			
+			function newFood(){
+			    snack = new Circle(5);
+			    var snackX = Randomizer.nextInt(5,getWidth() -5);
+			    var snackY = Randomizer.nextInt(5, getHeight() -5);
+			    if(getElementAt(snackX,snackY) == null){
+			        snack.setPosition(Randomizer.nextInt(5,getWidth()-5), Randomizer.nextInt(5, getHeight()-5));
+			    }
+			    snack.setColor(Color.red);
+			    add(snack);
+			    if(lost){
+			        stopTimer(newFood);
+			    }
+			    
+			}
+			
+			function point(){
+			    remove(counter);
+			    counter = new Text(points, "17pt Arial");
+			    counter.setPosition(5, getHeight()-5);
+			    add(counter);
+			}
+
+		    if (typeof start === 'function') 
+			{
+		        start();
+		    }
+		};
+		</script>
+		<br>
+		<div class="spacer"></div>
+	</div>
+	</body>
+</html>
+

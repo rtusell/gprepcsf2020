@@ -1,0 +1,279 @@
+<html>
+<head>
+
+	<meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+	
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+    <!-- Bootstrap JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+
+	<title>Balbach Snake</title>
+	
+	<link rel="stylesheet" type="text/css" href="../style.css">
+	
+	<script type="text/javascript" src="https://static.codehs.com/gulp/0444eb492be7b35724333daa087b82121c1743cb/chs-js-lib/chs.js"></script>
+
+
+	<style>
+	canvas 
+	{
+	    border: 1px solid black;
+	    display: block;
+		margin-left:auto;
+		margin-right:auto;
+	    vertical-align: top;
+	}
+	
+	pre 
+	{
+	    border: 1px solid black;
+	    display: inline-block;
+	    width: 400px;
+	    height: 500px;
+	    background-color: #F5F5F5;
+	}
+	</style>
+
+</head>
+
+<body>
+	<div class="container">
+		<br>
+		<br>
+		<div class="row">
+			<img  class="logo" src = "https://www.gprep.org/uploaded/Website_Redesign_Spring_2016/seal_PMS_282_blue.jpg" width ="200 px">
+		</div>
+		<br>
+		<div class="row">
+			<h1 class="text-center">
+	            Computer Science Fundamentals
+				<br>
+				<small>Summer 2020</small>
+	        </h1>
+		</div>
+		<div class="btn-group btn-group-justified">
+			<a href="../index.html" class="btn btn-primary btn-lg"> <span class="glyphicon glyphicon-home"></span> Home </a>
+			<a href="../helicopter.html" class="btn btn-primary btn-lg"> Helicopter </a>
+			<a href="../tic-tac-toe.html" class="btn btn-primary btn-lg">Tic-tac-toe</a>
+			<a href="../break-out.html" class="btn btn-primary btn-lg">Breakout</a>
+			<a href="../snake.html" class="btn btn-primary btn-lg">Snake</a>
+		</div>
+		<div class="spacer"></div>
+		<canvas 
+		width="400"
+		height="500"
+		class="displaygame"></canvas>
+		
+		<script>
+		window.onload = function() 
+		{
+
+			var POINTS_TEXT_X = 5;
+			var POINTS_TEXT_Y_BUFFER = 5;
+			var POINTS_FONT = "17pt Arial";
+			
+			var FOOD_DELAY = 6000;
+			var FOOD_RADIUS = 5;
+			var FOOD_COLOR = Color.red;
+			
+			var snek;
+			var SNAKE_DIM = 10;
+			var SNAKE_COLOR = Color.green;
+			
+			var positionX = getWidth()/2 - SNAKE_DIM/2;
+			var positionY = getHeight()/2 - SNAKE_DIM/2;
+			
+			var direction; 
+			
+			var apple; 
+			
+			var NORTH = 0;
+			var EAST = 1;
+			var SOUTH = 2;
+			var WEST = 3;
+			
+			var points = 0;
+			var score;
+			
+			function start()
+			{
+			    score = new Text(points);
+			    score.setPosition(0, getHeight() - 1);
+			    add(score);
+			    
+			    direction = EAST;
+			    food();
+			    setTimer(move, 100);
+			    setTimer(food, FOOD_DELAY);
+			    keyDownMethod(changeDirection);
+			}
+			
+			function move()
+			{
+			    makeSnake();
+			    if(direction == EAST)
+			    {
+			        positionX += SNAKE_DIM;
+			        if(positionX >= getWidth())
+			        {
+			            positionX = 0;
+			        }
+			    }
+			    if(direction == WEST)
+			    {
+			        positionX -= SNAKE_DIM;
+			        if(positionX < 0)
+			        {
+			            positionX = getWidth() - SNAKE_DIM;
+			        }
+			    }
+			    if(direction == NORTH)
+			    {
+			        positionY -= SNAKE_DIM;
+			        if(positionY < 0)
+			        {
+			            positionY = getHeight() - SNAKE_DIM;
+			        }
+			    }
+			    if(direction == SOUTH)
+			    {
+			        positionY += SNAKE_DIM;
+			        if(positionY >= getHeight())
+			        {
+			            positionY = 0;
+			        }
+			    }
+			    checkIfSnek();
+			    eatFood();
+			    points++;
+			    updateScore();
+			}
+			
+			function makeSnake()
+			{
+			    snek = new Rectangle(SNAKE_DIM, SNAKE_DIM);
+			    snek.setPosition(positionX, positionY);
+			    snek.setColor(SNAKE_COLOR);
+			    add(snek);
+			}
+			
+			function food()
+			{
+			    apple = new Circle(FOOD_RADIUS);
+			    apple.setPosition(Randomizer.nextInt(FOOD_RADIUS, getWidth() - FOOD_RADIUS),
+			                      Randomizer.nextInt(FOOD_RADIUS, getHeight() - FOOD_RADIUS));
+			    apple.setColor(FOOD_COLOR);
+			    add(apple);
+			}
+			
+			function eatFood()
+			{
+			    if(apple.getX() >= positionX - FOOD_RADIUS && apple.getX() <= positionX + SNAKE_DIM + FOOD_RADIUS && 
+			       apple.getY() >= positionY - FOOD_RADIUS && apple.getY() <= positionY + SNAKE_DIM + FOOD_RADIUS)
+			    {
+			        remove(apple);
+			        points += 50;
+			        updateScore();
+			    }
+			}
+			
+			function checkIfSnek()
+			{
+			    if(direction == EAST)
+			    {
+			        var elem = getElementAt(positionX + SNAKE_DIM + 1, positionY + 1);
+			        if(elem != null)
+			        {
+			            if(elem.getType() == "Rectangle")
+			            {
+			                youLose();
+			            }
+			        }
+			    }
+			    if(direction == WEST)
+			    {
+			        var elem = getElementAt(positionX + 1, positionY + 1);
+			        if(elem != null)
+			        {
+			            if(elem.getType() == "Rectangle")
+			            {
+			                youLose();
+			            }
+			        }
+			    }
+			    if(direction == NORTH)
+			    {
+			        var elem = getElementAt(positionX + 1, positionY + 1);
+			        if(elem != null)
+			        {
+			            if(elem.getType() == "Rectangle")
+			            {
+			                youLose();
+			            }
+			        }
+			    }
+			    if(direction == SOUTH)
+			    {
+			        var elem = getElementAt(positionX + 1, positionY + SNAKE_DIM - 1);
+			        if(elem != null)
+			        {
+			            if(elem.getType() == "Rectangle")
+			            {
+			                youLose();
+			            }
+			        }
+			    }
+			}
+			
+			function updateScore()
+			{
+			    score.setText(points);
+			}
+			
+			function youLose()
+			{
+			    stopTimer(move);
+			    stopTimer(food);
+			    var lost = new Text("You Lose", "45pt Arial");
+			    lost.setPosition(getWidth()/2 - 120, getHeight()/2 + 30);
+			    add(lost);
+			}
+			
+			function changeDirection(e)
+			{
+			    if(e.keyCode == Keyboard.RIGHT)
+			    {
+			        direction = EAST;
+			    }
+			    if(e.keyCode == Keyboard.LEFT)
+			    {
+			        direction = WEST;
+			    }
+			    if(e.keyCode == Keyboard.UP)
+			    {
+			        direction = NORTH;
+			    }
+			    if(e.keyCode == Keyboard.DOWN)
+			    {
+			        direction = SOUTH;
+			    }
+			}			
+			
+		    if (typeof start === 'function') 
+			{
+		        start();
+		    }
+		};
+		</script>
+		<br>
+		<div class="spacer"></div>
+	</div>
+	</body>
+</html>
+

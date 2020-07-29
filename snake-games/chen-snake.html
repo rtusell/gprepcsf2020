@@ -1,0 +1,214 @@
+<html>
+<head>
+
+	<meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+	
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+    <!-- Bootstrap JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+
+	<title>Chen Snake</title>
+	
+	<link rel="stylesheet" type="text/css" href="../style.css">
+	
+	<script type="text/javascript" src="https://static.codehs.com/gulp/0444eb492be7b35724333daa087b82121c1743cb/chs-js-lib/chs.js"></script>
+
+
+	<style>
+	canvas 
+	{
+	    border: 1px solid black;
+	    display: block;
+		margin-left:auto;
+		margin-right:auto;
+	    vertical-align: top;
+	}
+	
+	pre 
+	{
+	    border: 1px solid black;
+	    display: inline-block;
+	    width: 400px;
+	    height: 500px;
+	    background-color: #F5F5F5;
+	}
+	</style>
+
+</head>
+
+<body>
+	<div class="container">
+		<br>
+		<br>
+		<div class="row">
+			<img  class="logo" src = "https://www.gprep.org/uploaded/Website_Redesign_Spring_2016/seal_PMS_282_blue.jpg" width ="200 px">
+		</div>
+		<br>
+		<div class="row">
+			<h1 class="text-center">
+	            Computer Science Fundamentals
+				<br>
+				<small>Summer 2020</small>
+	        </h1>
+		</div>
+		<div class="btn-group btn-group-justified">
+			<a href="../index.html" class="btn btn-primary btn-lg"> <span class="glyphicon glyphicon-home"></span> Home </a>
+			<a href="../helicopter.html" class="btn btn-primary btn-lg"> Helicopter </a>
+			<a href="../tic-tac-toe.html" class="btn btn-primary btn-lg">Tic-tac-toe</a>
+			<a href="../break-out.html" class="btn btn-primary btn-lg">Breakout</a>
+			<a href="../snake.html" class="btn btn-primary btn-lg">Snake</a>
+		</div>
+		<div class="spacer"></div>
+		<canvas 
+		width="400"
+		height="500"
+		class="displaygame"></canvas>
+		
+		<script>
+		window.onload = function() 
+		{
+
+			var snake;
+			
+			var size = 10;
+			var NORTH = 0;
+			var EAST = 1;
+			var SOUTH = 2;
+			var WEST = 3;
+			var DELAY = 100;
+			var FOOD_DELAY = 10;
+			var FOODR = 5;
+			
+			var mainD = EAST;
+			
+			var x = getWidth()/2 - size/2;
+			var y = getHeight()/2 - size/2;
+			
+			var points = 0;
+			var pointsText;
+			
+			var POINTS_TEXT_X = 5;
+			var POINTS_TEXT_Y_BUFFER = 5;
+			
+			var oldest;
+			function start(){
+			    makepoints();
+			    part(x,y);
+			    setTimer(move, DELAY);
+			    sumFood();
+			    setTimer(sumFood, FOOD_DELAY);
+			    keyDownMethod(direction);
+			}
+			function direction(e){
+			    if(e.keyCode == Keyboard.DOWN){
+			        mainD = SOUTH;
+			    }
+			    if(e.keyCode == Keyboard.UP){
+			        mainD = NORTH;
+			    }
+			    if(e.keyCode == Keyboard.LEFT){
+			        mainD = WEST;
+			    }
+			    if(e.keyCode == Keyboard.RIGHT){
+			        mainD = EAST;
+			    }
+			}
+			function move(){
+			    var nextPosition = getNextPosition();
+			    x = nextPosition.x;
+			    y = nextPosition.y;
+			    points++;
+			    pointsText.setText(points);
+			    var nextElem = getElementAt(x, y);
+			    if(nextElem == null){
+			        part(x, y);      
+			    }else{
+			        if(nextElem.isSnake){
+			            message("You Lose.");
+			            stopTimer(move);
+			            stopTimer(sumFood);            
+			        }
+			        
+			        if(nextElem.isFood){
+			            points += 100;
+			            pointsText.setText(points);
+			
+			            remove(nextElem);
+			            part(x, y);      
+			        }       
+			    }
+			}
+			function sumFood(){
+			    var x = Randomizer.nextInt(FOODR, getWidth() - FOODR);
+			    var y = Randomizer.nextInt(FOODR, getHeight() - FOODR);
+			    x = Math.floor(x / 10) * 10 + 5;
+			    y = Math.floor(y / 10) * 10 + 5;
+			    var food = new Circle(FOODR);
+			    food.isFood = true;
+			    food.setColor(Color.red);
+			    food.setPosition(x, y);
+			    if(getElementAt(x,y) == null){
+			        add(food);  
+			    }
+			}
+			function makepoints(){
+			    pointsText = new Text(points, "17pt Arial");
+			    pointsText.setPosition(POINTS_TEXT_X, getHeight() - POINTS_TEXT_Y_BUFFER);
+			    add(pointsText);
+			}
+			
+			function part(x,y){
+			    var snake = new Rectangle(size, size);
+			    snake.setPosition(x - size/2 , y - size/2);
+			    snake.setColor(Color.green);
+			    snake.isSnake = true;
+			    add(snake);
+			}
+			function message(message){
+			    var text = new Text(message,"40pt Arial");
+			    text.setPosition(getWidth()/2 - text.getWidth()/2, getHeight()/2);
+			    add(text);
+			}
+			function getNextPosition(){
+			    var nextX = x;
+			    var nextY = y;
+			    if(mainD == EAST){
+			        nextX += size;
+			    }
+			    if(mainD == WEST){
+			        nextX -= size;
+			    }
+			    if(mainD == SOUTH){
+			        nextY += size;
+			    }
+			    if(mainD == NORTH){
+			        nextY -= size;
+			    }
+			    
+			    nextX = (nextX + getWidth()) % getWidth();
+			    nextY = (nextY + getHeight()) % getHeight();
+			    
+			    return {
+			        x: nextX,
+			        y: nextY
+			    };
+			}			
+						
+		    if (typeof start === 'function') 
+			{
+		        start();
+		    }
+		};
+		</script>
+		<br>
+		<div class="spacer"></div>
+	</div>
+	</body>
+</html>
+
