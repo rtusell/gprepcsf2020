@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+	<meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="../w3.css">
+	<link rel="stylesheet" href="../style.css">
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+	<title>Delistathis Breakout</title>
+
+	<link rel="stylesheet" type="text/css" href="../style.css">
+
+	<script type="text/javascript" src="https://static.codehs.com/gulp/0444eb492be7b35724333daa087b82121c1743cb/chs-js-lib/chs.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+	<style>
+
+	body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
+	.w3-row-padding img {margin-bottom: 12px}
+	/* Set the width of the sidebar to 120px */
+	.w3-sidebar {width: 120px;background: #222;}
+	/* Add a left margin to the "page content" that matches the width of the sidebar (120px) */
+	#main {margin-left: 120px}
+	/* Remove margins from "page content" on small screens */
+	@media only screen and (max-width: 600px) {#main {margin-left: 0}}
+
+	canvas
+	{
+	    border: 1px solid black;
+	    display: block;
+			margin-left:auto;
+			margin-right:auto;
+	    vertical-align: top;
+	}
+
+	pre
+	{
+	    border: 1px solid black;
+	    display: inline-block;
+	    width: 400px;
+	    height: 500px;
+	    background-color: #F5F5F5;
+	}
+	</style>
+
+</head>
+
+<body class="w3-black">
+	<!-- Icon Bar (Sidebar - hidden on small screens) -->
+	<nav class="w3-sidebar w3-bar-block w3-small w3-hide-small w3-center">
+	  <!-- Avatar image in top left corner -->
+	  <img src="../prep_grey.JPG" class="avatar">
+	  <a href="../index.html#" class="w3-bar-item w3-button w3-padding-large w3-black">
+	    <i class="fa fa-home w3-xxlarge"></i>
+	    <p>HOME</p>
+	  </a>
+	  <a href="../index.html#helicopter" class="w3-bar-item w3-button w3-padding-large w3-hover-black">
+	    <img src="../helicopter.PNG" style="width:90%">
+	    <p>HELICOPTER</p>
+	  </a>
+	  <a href="../index.html#tic-tac-toe" class="w3-bar-item w3-button w3-padding-large w3-hover-black">
+	    <img src="../tic-tac-toe.PNG" style="width:90%">
+	    <p>TIC-TAC-TOE</p>
+	  </a>
+	  <a href="../index.html#snake" class="w3-bar-item w3-button w3-padding-large w3-hover-black">
+	    <img src="../snake.PNG" style="width:90%">
+	    <p>SNAKE</p>
+	  </a>
+	  <a href="../index.html#breakout" class="w3-bar-item w3-button w3-padding-large w3-hover-black">
+	    <img src="../break-out.PNG" style="width:90%">
+	    <p>BREAKOUT</p>
+	  </a>
+	</nav>
+
+	<!-- Navbar on small screens (Hidden on medium and large screens) -->
+	<div class="w3-top w3-hide-large w3-hide-medium" id="myNavbar">
+	  <div class="w3-bar w3-black w3-opacity w3-hover-opacity-off w3-center w3-small">
+	    <a href="../index.html#" class="w3-bar-item w3-button" style="width:20% !important">HOME</a>
+	    <a href="../index.html#helicopter" class="w3-bar-item w3-button" style="width:20% !important">HELICOPTER</a>
+	    <a href="../index.html#tic-tac-toe" class="w3-bar-item w3-button" style="width:20% !important">TIC-TAC-TOE</a>
+	    <a href="../index.html#breakout" class="w3-bar-item w3-button" style="width:20% !important">BREAKOUT</a>
+			<a href="../index.html#snake" class="w3-bar-item w3-button" style="width:20% !important">SNAKE</a>
+	  </div>
+	</div>
+
+	<header class="w3-container w3-padding-32 w3-center w3-black">
+		<img src="../prep_grey.JPG" class="w3-image logo">
+		<h1 class="w3-jumbo"><span class="w3-hide-small"></span> Breakout Game 6</h1>
+		<h3>
+			Clear all the bricks to win.  Do not let the ball touch the bottom wall.
+			<br>
+			Use your mouse to move the paddle and bounce the ball back to the bricks!
+			<br>
+      To start/restart the game click on the screen.  You have three lives.
+		</h3>
+	</header>
+
+		<canvas
+		width="400"
+		height="500"
+		class="displaygame"></canvas>
+
+		<script>
+		window.onload = function() {
+
+			setBackgroundColor(Color.white);
+
+			/* Constants for bricks */
+			var NUM_TOTAL_BRICKS = 0;
+			var NUM_ROWS = 8;
+			var winCheck = 80;
+			var BRICK_TOP_OFFSET = 10;
+			var BRICK_SPACING = 2;
+			var NUM_BRICKS_PER_ROW = 10;
+			var BRICK_HEIGHT = 10;
+			var SPACE_FOR_BRICKS = getWidth() - (NUM_BRICKS_PER_ROW + 1) * BRICK_SPACING;
+			var BRICK_WIDTH = SPACE_FOR_BRICKS / NUM_BRICKS_PER_ROW;
+			var lives = new Text(3, "30 pt Arial");
+			lives.setPosition(0, getHeight() / 2);
+			add(lives);
+			var brick;
+			var paddle;
+			var ball;
+			var elem;
+			var dx = 4;
+			var dy = 4;
+			var life = 3;
+			var brickX = 0 + BRICK_SPACING;
+			var brickY = 0 + BRICK_TOP_OFFSET;
+			/* Constants for ball and paddle */
+			var PADDLE_WIDTH = 80;
+			var PADDLE_HEIGHT = 15;
+			var PADDLE_OFFSET = 10;
+			var BRICK_COLOR = 1;
+			var BALL_RADIUS = 15;
+			var CURRENT_ROW = 1;
+			function start()
+			{
+			        makeBrickRows();
+			        makePaddleOnScreen();
+			        mouseMoveMethod(makePaddleAdjustment);
+			        makeBallOnScreen();
+				    begin(20);
+			}
+			function makeBallMoveOnScreen()
+			{
+			    var elem = getElementAt(ball.getX(), ball.getY());
+			    caution();
+			    ball.move(dx, dy);
+			    cautionTwo();
+			    lives.setText(life);
+			    if(life <= 0)
+			    {
+			        stopTimer(makeBallMoveOnScreen);
+			        removeAll;
+			        var txt = new Text("You lose :(. ", "30pt Arial");
+			        txt.setPosition(getWidth() / 2 - txt.getWidth() / 2, getHeight() / 2 + txt.getHeight() / 2);
+			        add(txt);
+			    }
+			    if(winCheck <= 0)
+			    {
+			        removeAll;
+			        var txt = new Text("You Win :)! ", "30 pt Arial");
+			        txt.setPosition(getWidth() / 2 - txt.getWidth() / 2, getHeight() / 2 + txt.getHeight() / 2);
+			        add(txt);
+			    }
+			    keyDownMethod(boom);
+			}
+			function boom(e)
+			{
+			    if(e.keyCode == Keyboard.DOWN)
+			    {
+			        var stuff = new Rectangle(getWidth(), PADDLE_HEIGHT);
+			        stuff.setPosition(0, getHeight() - PADDLE_HEIGHT - PADDLE_OFFSET);
+			        add(stuff);
+			        setTimer(makeBallMoveOnSCreen, 2);
+			    }
+			}
+			function makeBrickRows()
+			{
+			    while(NUM_TOTAL_BRICKS < NUM_BRICKS_PER_ROW)
+			    {
+			        brick = new Rectangle(BRICK_WIDTH, BRICK_HEIGHT);
+			        brick.setPosition(brickX, brickY);
+			        if(BRICK_COLOR == 1 || BRICK_COLOR == 2)
+			        {
+			            brick.setColor(Color.red);
+			        }
+			        else if(BRICK_COLOR == 3 || BRICK_COLOR == 4)
+			        {
+			            brick.setColor(Color.orange);
+			        }
+			        else if (BRICK_COLOR == 5 || BRICK_COLOR == 6)
+			        {
+			            brick.setColor(Color.green);
+			        }
+			        else if(BRICK_COLOR == 7 || BRICK_COLOR == 8)
+			        {
+			            brick.setColor(Color.blue);
+			        }
+			        add(brick);
+			        brickX += BRICK_WIDTH + BRICK_SPACING;
+			        NUM_TOTAL_BRICKS++;
+			        if(NUM_TOTAL_BRICKS >= NUM_BRICKS_PER_ROW && CURRENT_ROW != NUM_ROWS)
+			        {
+			            brickY += BRICK_HEIGHT + BRICK_SPACING;
+			            brickX = 0 + BRICK_SPACING;
+			            CURRENT_ROW++;
+			            BRICK_COLOR++;
+			            NUM_TOTAL_BRICKS = 0;
+			        }
+			    }
+			}
+			function makePaddleOnScreen()
+			{
+			    paddle = new Rectangle(PADDLE_WIDTH, PADDLE_HEIGHT);
+			    paddle.setPosition(getWidth() / 2 - PADDLE_WIDTH / 2, getHeight() - PADDLE_HEIGHT - PADDLE_OFFSET);
+			    paddle.setColor(Color.red);
+			    add(paddle);
+			}
+			function makePaddleAdjustment(e)
+			{
+			    paddle.setPosition(e.getX() - PADDLE_WIDTH / 2, getHeight() - PADDLE_OFFSET - PADDLE_HEIGHT);
+			    if(e.getX() <= PADDLE_WIDTH / 2)
+			    {
+			        paddle.setPosition(0, getHeight() - PADDLE_HEIGHT - PADDLE_OFFSET);
+			    }
+			    else if(e.getX() >= getWidth() - PADDLE_WIDTH / 2)
+			    {
+			        paddle.setPosition(getWidth() - PADDLE_WIDTH, getHeight() - PADDLE_HEIGHT - PADDLE_OFFSET);
+			    }
+			}
+			function makeBallOnScreen()
+			{
+			    ball = new Circle(BALL_RADIUS);
+			    ball.setPosition(getWidth() / 2, getHeight() / 2);
+			    ball.setColor(Color.CYAN);
+			    add(ball);
+			}
+			function caution()
+			{
+			    if(ball.getY() - BALL_RADIUS * 3 <= NUM_ROWS * BRICK_HEIGHT)
+			    {
+			        elem = getElementAt(ball.getX(), ball.getY() - ball.getRadius());
+			        if(elem != null && elem != paddle)
+			        {
+			            dy = -dy;
+			            remove(elem);
+			            winCheck--;
+			        }
+			    }
+			    elem = getElementAt(ball.getX() + ball.getRadius(), ball.getY());
+			    if(elem != null && elem != paddle)
+			    {
+			        dx = -dx;
+			        remove(elem);
+			        winCheck--;
+			    }
+			    elem = getElementAt(ball.getX() - ball.getRadius(), ball.getY());
+			    if(elem != null && elem != paddle)
+			    {
+			        dx = -dx;
+			        remove(elem);
+			        winCheck--;
+			    }
+			    elem = getElementAt(ball.getX(), ball.getY() + ball.getRadius());
+			        if(elem != null && elem != paddle)
+			        {
+			            dy = -dy;
+			            remove(elem);
+			            winCheck--;
+			        }
+			        else if(elem != null && elem == paddle)
+			        {
+			            dy = -dy;
+			        }
+			}
+			function cautionTwo()
+			{
+			    if(ball.getX() + ball.getRadius() > getWidth())
+			    {
+			        dx = -dx;
+			    }
+			    if(ball.getX() - ball.getRadius() < 0)
+			    {
+			        dx = -dx;
+			    }
+			    if(ball.getY() + ball.getRadius() > getHeight())
+			    {
+			        stop();
+			        ball.setPosition(getWidth() / 2, getHeight() / 2);
+			        life--;
+			    }
+			    if(ball.getY() - ball.getRadius() < 0)
+			    {
+			        dy = -dy;
+			    }
+			    if(ball.getY() + BALL_RADIUS >= paddle.getY() - PADDLE_HEIGHT)
+			    {
+			        elem = getElementAt(ball.getX(), ball.getY() - ball.getRadius());
+			        if(elem != null)
+			        {
+			            dy = -dy;
+			        }
+			    }
+			}
+			function go()
+			{
+			    setTimer(makeBallMoveOnScreen, 20);
+			}
+			function stop()
+			{
+			    stopTimer(makeBallMoveOnScreen);
+			    mouseClickMethod(go);
+			}
+			function delay()
+			    {
+			        setTimer(makeBallMoveOnScreen, 24);
+			        stopTimer(delay);
+			    }
+			function begin()
+			{
+
+			    setTimer(delay, 2000);
+			}
+		    if (typeof start === 'function') {
+		        start();
+		    }
+		};
+		</script>
+		<br>
+		<div class="spacer"></div>
+	</div>
+	</body>
+</html>

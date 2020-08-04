@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+	<meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="../w3.css">
+	<link rel="stylesheet" href="../style.css">
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+	<title>Baco-Gavilan Breakout</title>
+
+	<link rel="stylesheet" type="text/css" href="../style.css">
+
+	<script type="text/javascript" src="https://static.codehs.com/gulp/0444eb492be7b35724333daa087b82121c1743cb/chs-js-lib/chs.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+	<style>
+
+	body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
+	.w3-row-padding img {margin-bottom: 12px}
+	/* Set the width of the sidebar to 120px */
+	.w3-sidebar {width: 120px;background: #222;}
+	/* Add a left margin to the "page content" that matches the width of the sidebar (120px) */
+	#main {margin-left: 120px}
+	/* Remove margins from "page content" on small screens */
+	@media only screen and (max-width: 600px) {#main {margin-left: 0}}
+
+	canvas
+	{
+	    border: 1px solid black;
+	    display: block;
+			margin-left:auto;
+			margin-right:auto;
+	    vertical-align: top;
+	}
+
+	pre
+	{
+	    border: 1px solid black;
+	    display: inline-block;
+	    width: 400px;
+	    height: 500px;
+	    background-color: #F5F5F5;
+	}
+	</style>
+
+</head>
+
+<body class="w3-black">
+	<!-- Icon Bar (Sidebar - hidden on small screens) -->
+	<nav class="w3-sidebar w3-bar-block w3-small w3-hide-small w3-center">
+	  <!-- Avatar image in top left corner -->
+	  <img src="../prep_grey.JPG" class="avatar">
+	  <a href="../index.html#" class="w3-bar-item w3-button w3-padding-large w3-black">
+	    <i class="fa fa-home w3-xxlarge"></i>
+	    <p>HOME</p>
+	  </a>
+	  <a href="../index.html#helicopter" class="w3-bar-item w3-button w3-padding-large w3-hover-black">
+	    <img src="../helicopter.PNG" style="width:90%">
+	    <p>HELICOPTER</p>
+	  </a>
+	  <a href="../index.html#tic-tac-toe" class="w3-bar-item w3-button w3-padding-large w3-hover-black">
+	    <img src="../tic-tac-toe.PNG" style="width:90%">
+	    <p>TIC-TAC-TOE</p>
+	  </a>
+	  <a href="../index.html#snake" class="w3-bar-item w3-button w3-padding-large w3-hover-black">
+	    <img src="../snake.PNG" style="width:90%">
+	    <p>SNAKE</p>
+	  </a>
+	  <a href="../index.html#breakout" class="w3-bar-item w3-button w3-padding-large w3-hover-black">
+	    <img src="../break-out.PNG" style="width:90%">
+	    <p>BREAKOUT</p>
+	  </a>
+	</nav>
+
+	<!-- Navbar on small screens (Hidden on medium and large screens) -->
+	<div class="w3-top w3-hide-large w3-hide-medium" id="myNavbar">
+	  <div class="w3-bar w3-black w3-opacity w3-hover-opacity-off w3-center w3-small">
+	    <a href="../index.html#" class="w3-bar-item w3-button" style="width:20% !important">HOME</a>
+	    <a href="../index.html#helicopter" class="w3-bar-item w3-button" style="width:20% !important">HELICOPTER</a>
+	    <a href="../index.html#tic-tac-toe" class="w3-bar-item w3-button" style="width:20% !important">TIC-TAC-TOE</a>
+	    <a href="../index.html#breakout" class="w3-bar-item w3-button" style="width:20% !important">BREAKOUT</a>
+			<a href="../index.html#snake" class="w3-bar-item w3-button" style="width:20% !important">SNAKE</a>
+	  </div>
+	</div>
+
+	<header class="w3-container w3-padding-32 w3-center w3-black">
+		<img src="../prep_grey.JPG" class="w3-image logo">
+		<h1 class="w3-jumbo"><span class="w3-hide-small"></span> Breakout Game 1</h1>
+		<h3>
+			Clear all the bricks to win.  Do not let the ball touch the bottom wall.
+			<br>
+			Use your mouse to move the paddle and bounce the ball back to the bricks!
+			<br>
+      You have three	lives. To start/restart the game click on the screen.
+		</h3>
+	</header>
+
+		<canvas
+		width="400"
+		height="500"
+		class="displaygame"></canvas>
+
+		<script>
+		window.onload = function() {
+
+			setBackgroundColor(Color.white);
+
+			/* Constants for bricks */
+			var NUM_ROWS = 8;
+			var BRICK_TOP_OFFSET = 10;
+			var NUM_BRICKS = 80;
+			var BRICK_SPACING = 2;
+			var NUM_BRICKS_PER_ROW = 10;
+			var BRICK_HEIGHT = 10;
+			var SPACE_FOR_BRICKS = getWidth() - (NUM_BRICKS_PER_ROW + 1) * BRICK_SPACING;
+			var BRICK_WIDTH = SPACE_FOR_BRICKS / NUM_BRICKS_PER_ROW;
+
+			/* Constants for ball and paddle */
+			var PADDLE_WIDTH = 80;
+			var PADDLE_HEIGHT = 15;
+			var PADDLE_OFFSET = 10;
+			var BALL_RADIUS = 15;
+			var dx = 2;
+			var dy = 2;
+			var centerX = getWidth()/2;
+			var centerY = getHeight()/2;
+			var drawBall;
+			var drawPaddle;
+			var pause = false;
+			var score = 0;
+			var lives = 3;
+			var number;
+			var point;
+			var winner;
+			var loser;
+
+			function start(){
+				wall();
+				addBall();
+				setTimer(game, 10);
+				addPaddle();
+				mouseMoveMethod(movePaddle);
+				mouseClickMethod(pauseGame);
+			}
+			function wall(){
+			    for(var i = 0; i < 10; i++){
+			        for(var h = 0; h < 8; h++){
+			            var x = 2 + i*(2 + BRICK_WIDTH);
+			            var y = 10 + h*(2 + BRICK_HEIGHT);
+			            if(h == 0 || h == 1){
+			                addBrick(x, y, Color.red);
+			            }
+			            else if(h == 2 || h == 3){
+			                addBrick(x, y, Color.orange);
+			            }
+			            else if(h == 4 || h == 5){
+			                addBrick(x, y, Color.green);
+			            }
+			            else if(h == 6 || h == 7){
+			                addBrick(x, y, Color.blue);
+			            }
+			        }
+			    }
+			}
+			function addBrick(x, y, color){
+			    var drawBrick = new Rectangle(BRICK_WIDTH, BRICK_HEIGHT);
+			    drawBrick.setPosition(x, y);
+			    drawBrick.setColor(color);
+			    add(drawBrick);
+			}
+			function addBall(){
+			    drawBall = new Circle(15);
+			    drawBall.setPosition(centerX, centerY);
+			    add(drawBall);
+			}
+			function addPaddle(){
+			    drawPaddle = new Rectangle(80, 15);
+			    drawPaddle.setPosition(getWidth()/2, getHeight() - 25);
+			    add(drawPaddle);
+			}
+			function movePaddle(e){
+			    drawPaddle.setPosition(e.getX(), getHeight() - 25);
+			    if(e.getX() >= getWidth() - 15){
+			        drawPaddle.setPosition(getWidth() - 80, getHeight() - 10);
+			    }
+			}
+			function moveBall(){
+			    drawBall.move(dx, dy);
+			    if(drawBall.getX() > getWidth() - 15){
+			        dx = -dx;
+			    }
+			    else if(drawBall.getY() > getHeight()){
+			        stopTimer(game);
+			        drawBall.setPosition(centerX, centerY);
+			        pause = true;
+			        lives--;
+			        setTimer(game, 10);
+			        if(lives == 0){
+			            stopTimer(game);
+			            loser = new Text("Game Over");
+			            loser.setPosition(centerX - 50, centerY - 100);
+			            add(loser);
+			        }
+
+			    }
+			    else if(drawBall.getX() < 0){
+			        dx = -dx;
+			    }
+			    else if(drawBall.getY() < 0){
+			        dy = -dy;
+			    }
+			}
+			function game(){
+			    element();
+			    if(!pause){
+			        moveBall();
+			        drawBall.move(dx, dy);
+			        checkPaddle();
+			    }
+			    printLives();
+			    printScore();
+			    win();
+			}
+			function pauseGame(){
+			    pause = !pause;
+			}
+			function element(){
+			    var E1 = getElementAt(drawBall.getX(), drawBall.getY() - 15);
+			    var E2 = getElementAt(drawBall.getX(), drawBall.getY() + 15);
+			    var E3 = getElementAt(drawBall.getX() - 15, drawBall.getY());
+			    var E4 = getElementAt(drawBall.getX() + 15, drawBall.getY());
+			    if(E1 != null){
+			        if(E1.getColor() != Color.black){
+			            remove(E1);
+			            dy = -dy;
+			            score++;
+			        }
+			    }
+			    if(E2 != null){
+			        if(E2.getColor() != Color.black){
+			            remove(E2);
+			            dy = -dy;
+			            score++;
+			        }
+			    }
+			    if(E3 != null){
+			        if(E3.getColor() != Color.black){
+			            remove(E3);
+			            dy = -dy;
+			            score++;
+			        }
+			    }
+			    if(E4 != null){
+			        if(E4.getColor() != Color.black){
+			            remove(E4);
+			            dy = -dy;
+			            score++;
+			        }
+			    }
+			}
+			function checkPaddle(){
+			    var check = getElementAt(drawBall.getX(), drawBall.getY() + 15);
+			    if(check == drawPaddle){
+			        dy = -dy;
+			    }
+			}
+			function printLives(){
+			    remove(number);
+			    number = new Text(lives);
+			    number.setPosition(0, centerY);
+			    add(number);
+			}
+			function printScore(){
+			    remove(point);
+			    point = new Text(score);
+			    point.setPosition(0, centerY + 100);
+			    add(point);
+			}
+			function win(){
+			    if(NUM_BRICKS == 0){
+			      winner = new Text("You won! ");
+			      winner.setPosition(centerX, centerY);
+			      add(winner);
+			    }
+			}
+
+		    if (typeof start === 'function') {
+		        start();
+		    }
+		};
+		</script>
+		<br>
+		<div class="spacer"></div>
+	</div>
+	</body>
+</html>

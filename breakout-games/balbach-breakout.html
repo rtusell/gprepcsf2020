@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+	<meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="../w3.css">
+	<link rel="stylesheet" href="../style.css">
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+	<title>Balbach Breakout</title>
+
+	<link rel="stylesheet" type="text/css" href="../style.css">
+
+	<script type="text/javascript" src="https://static.codehs.com/gulp/0444eb492be7b35724333daa087b82121c1743cb/chs-js-lib/chs.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+	<style>
+
+	body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
+	.w3-row-padding img {margin-bottom: 12px}
+	/* Set the width of the sidebar to 120px */
+	.w3-sidebar {width: 120px;background: #222;}
+	/* Add a left margin to the "page content" that matches the width of the sidebar (120px) */
+	#main {margin-left: 120px}
+	/* Remove margins from "page content" on small screens */
+	@media only screen and (max-width: 600px) {#main {margin-left: 0}}
+
+	canvas
+	{
+	    border: 1px solid black;
+	    display: block;
+			margin-left:auto;
+			margin-right:auto;
+	    vertical-align: top;
+	}
+
+	pre
+	{
+	    border: 1px solid black;
+	    display: inline-block;
+	    width: 400px;
+	    height: 500px;
+	    background-color: #F5F5F5;
+	}
+	</style>
+
+</head>
+
+<body class="w3-black">
+	<!-- Icon Bar (Sidebar - hidden on small screens) -->
+	<nav class="w3-sidebar w3-bar-block w3-small w3-hide-small w3-center">
+	  <!-- Avatar image in top left corner -->
+	  <img src="../prep_grey.JPG" class="avatar">
+	  <a href="../index.html#" class="w3-bar-item w3-button w3-padding-large w3-black">
+	    <i class="fa fa-home w3-xxlarge"></i>
+	    <p>HOME</p>
+	  </a>
+	  <a href="../index.html#helicopter" class="w3-bar-item w3-button w3-padding-large w3-hover-black">
+	    <img src="../helicopter.PNG" style="width:90%">
+	    <p>HELICOPTER</p>
+	  </a>
+	  <a href="../index.html#tic-tac-toe" class="w3-bar-item w3-button w3-padding-large w3-hover-black">
+	    <img src="../tic-tac-toe.PNG" style="width:90%">
+	    <p>TIC-TAC-TOE</p>
+	  </a>
+	  <a href="../index.html#snake" class="w3-bar-item w3-button w3-padding-large w3-hover-black">
+	    <img src="../snake.PNG" style="width:90%">
+	    <p>SNAKE</p>
+	  </a>
+	  <a href="../index.html#breakout" class="w3-bar-item w3-button w3-padding-large w3-hover-black">
+	    <img src="../break-out.PNG" style="width:90%">
+	    <p>BREAKOUT</p>
+	  </a>
+	</nav>
+
+	<!-- Navbar on small screens (Hidden on medium and large screens) -->
+	<div class="w3-top w3-hide-large w3-hide-medium" id="myNavbar">
+	  <div class="w3-bar w3-black w3-opacity w3-hover-opacity-off w3-center w3-small">
+	    <a href="../index.html#" class="w3-bar-item w3-button" style="width:20% !important">HOME</a>
+	    <a href="../index.html#helicopter" class="w3-bar-item w3-button" style="width:20% !important">HELICOPTER</a>
+	    <a href="../index.html#tic-tac-toe" class="w3-bar-item w3-button" style="width:20% !important">TIC-TAC-TOE</a>
+	    <a href="../index.html#breakout" class="w3-bar-item w3-button" style="width:20% !important">BREAKOUT</a>
+			<a href="../index.html#snake" class="w3-bar-item w3-button" style="width:20% !important">SNAKE</a>
+	  </div>
+	</div>
+
+	<header class="w3-container w3-padding-32 w3-center w3-black">
+		<img src="../prep_grey.JPG" class="w3-image logo">
+		<h1 class="w3-jumbo"><span class="w3-hide-small"></span> Breakout Game 3</h1>
+		<h3>
+			Clear all the bricks to win.  Do not let the ball touch the bottom wall.
+			<br>
+			Use your mouse to move the paddle and bounce the ball back to the bricks!
+			<br>
+      You have three	lives. To start/restart the game click on the screen.
+		</h3>
+	</header>
+
+		<canvas
+		width="400"
+		height="500"
+		class="displaygame"></canvas>
+
+		<script>
+		window.onload = function() {
+
+			setBackgroundColor(Color.white);
+
+			/* Constants for bricks */
+			var NUM_ROWS = 8;
+			var BRICK_TOP_OFFSET = 40;
+			var BRICK_SPACING = 2;
+			var NUM_BRICKS_PER_ROW = 10;
+			var BRICK_HEIGHT = 10;
+			var SPACE_FOR_BRICKS = getWidth() - (NUM_BRICKS_PER_ROW + 1) * BRICK_SPACING;
+			var BRICK_WIDTH = SPACE_FOR_BRICKS / NUM_BRICKS_PER_ROW;
+			var bricks = 0;
+
+			/* Constants for ball and paddle */
+			var paddle;
+			var PADDLE_WIDTH = 80;
+			var PADDLE_HEIGHT = 15;
+			var PADDLE_OFFSET = 10;
+
+			var ball;
+			var BALL_RADIUS = 15;
+			var dx = 2;
+			var dy = 5;
+			var ballIsMoving = false;
+
+			var DELAY = 20;
+
+			var x = BRICK_SPACING;
+			var y = BRICK_TOP_OFFSET;
+			var color = Color.red;
+
+			var lives = 2;
+			var score = 0;
+			var lifeDisplay;
+			var scoreDisplay;
+
+			function start()
+			{
+			    selectDifficulty();
+			    var border = new Line(0, 38, getWidth(), 38);
+			    add(border);
+
+				makeWall();
+
+				ball = new Circle(BALL_RADIUS);
+				ball.setPosition(getWidth()/2, getHeight()/2);
+				add(ball);
+
+				paddle = new Rectangle(PADDLE_WIDTH, PADDLE_HEIGHT);
+				paddle.setPosition(getWidth()/2 - PADDLE_WIDTH/2, getHeight() - PADDLE_OFFSET - PADDLE_HEIGHT);
+				add(paddle);
+
+				scoreDisplay = new Text("Score is: " + score, "20pt Arial");
+				scoreDisplay.setPosition(2, 30);
+				add(scoreDisplay);
+
+				lifeDisplay = new Text("Lives remaining: " + lives, "20pt Arial");
+				lifeDisplay.setPosition(getWidth() - 220, 30);
+				add(lifeDisplay);
+
+				mouseClickMethod(startBall);
+				mouseMoveMethod(movePaddle);
+			}
+			//Allows the user to choose a difficulty and changes the ball speed accordingly.
+			function selectDifficulty()
+			{
+			    var difficulty = prompt("Which difficulty would you like to play on, easy, normal, or hard? ");
+			    while(difficulty != "easy" || difficulty != "normal" || difficulty != "hard")
+			    {
+			        if(difficulty == "easy")
+			        {
+			            dx /= 2;
+			            dy /= 2;
+			            break;
+			        }
+			        else if(difficulty == "hard")
+			        {
+			            dx *= 2;
+			            dy *= 2;
+			            break;
+			        }
+			        else if(difficulty == "normal")
+			        {
+			            break;
+			        }
+			        else
+			        {
+			            difficulty = readLine("The difficulty you selected is invalid. Which difficulty would you like to play on, easy, normal, or hard?");
+			        }
+			    }
+			}
+			//This function creates the wall of bricks for the ball to destroy.
+			function makeWall()
+			{
+			    for(var i = 0; i < NUM_ROWS; i++)
+			    {
+			        if(Math.floor(i/2) == 1)
+			        {
+			            color = Color.orange;
+			        }
+			        if(Math.floor(i/2) == 2)
+			        {
+			            color = Color.green;
+			        }
+			        if(Math.floor(i/2) == 3)
+			        {
+			            color = Color.blue;
+			        }
+			        for(var j = 0; j < NUM_BRICKS_PER_ROW; j++)
+			        {
+			            drawBrick();
+			            bricks++;
+			            x += (BRICK_SPACING + BRICK_WIDTH);
+			        }
+			        x = BRICK_SPACING;
+			        y += BRICK_SPACING + BRICK_HEIGHT;
+			    }
+			}
+			//This function is used to draw a brick.
+			function drawBrick()
+			{
+			    var brick = new Rectangle(BRICK_WIDTH, BRICK_HEIGHT);
+			    brick.setPosition(x, y);
+			    brick.setColor(color);
+			    add(brick);
+			}
+			//This function allows the ball to start moving when the mouse is clicked.
+			function startBall()
+			{
+			    if(!ballIsMoving)
+			    {
+			        setTimer(ballMove, DELAY);
+			        ballIsMoving = true;
+			    }
+			}
+			//This function moves the ball according to dx and dy.
+			function ballMove()
+			{
+			    ball.move(dx, dy);
+			    breakBrick();
+			    checkIfWon();
+			    bounce();
+			}
+			//This function allows the ball to break bricks on its face when it is in the upper half of the canvas.
+			function breakBrick()
+			{
+			    if(ball.getY() < getHeight()/2 && ball.getY() - BALL_RADIUS > 40)
+			    {
+			        if(getElementAt(ball.getX() - BALL_RADIUS, ball.getY()) != null)
+			        {
+			            remove(getElementAt(ball.getX() - BALL_RADIUS, ball.getY()));
+			            bricks --;
+			            score++;
+			            updateScore();
+			            dx = -dx;
+			        }
+			        if(getElementAt(ball.getX() + BALL_RADIUS, ball.getY()) != null)
+			        {
+			            remove(getElementAt(ball.getX() + BALL_RADIUS, ball.getY()));
+			            bricks--;
+			            score++;
+			            updateScore();
+			            dx = -dx;
+			        }
+			        if(getElementAt(ball.getX(), ball.getY() - BALL_RADIUS) != null)
+			        {
+			            remove(getElementAt(ball.getX(), ball.getY() - BALL_RADIUS));
+			            bricks--;
+			            score++;
+			            updateScore();
+			            dy = -dy;
+			        }
+			        if(getElementAt(ball.getX(), ball.getY() + BALL_RADIUS) != null)
+			        {
+			            remove(getElementAt(ball.getX(), ball.getY() + BALL_RADIUS));
+			            bricks--;
+			            score++;
+			            updateScore();
+			            dy = -dy;
+			        }
+			    }
+			}
+			//This function allows the ball to bounce off a wall.
+			function bounce()
+			{
+			    if(ball.getX() - BALL_RADIUS < 0 || ball.getX() + BALL_RADIUS > getWidth())
+			    {
+			        dx = -dx;
+			    }
+			    if(ball.getY() - BALL_RADIUS < 40)
+			    {
+			        dy = -dy;
+			    }
+			    if(ball.getY() > getHeight()/2 )
+			    {
+			        if(getElementAt(ball.getX(), ball.getY() + BALL_RADIUS))
+			        {
+			            dy = -dy;
+			        }
+			        if(getElementAt(ball.getX() - BALL_RADIUS, ball.getY()))
+			        {
+			            dx = -dx;
+			        }
+			        if(getElementAt(ball.getX() + BALL_RADIUS, ball.getY()))
+			        {
+			            dx = -dx;
+			        }
+			    }
+			    if(ball.getY() + BALL_RADIUS > getHeight())
+			    {
+			        resetBall();
+			        lives--;
+			        updateLives();
+			    }
+			}
+			//This function resets the ball to the middle when it hits the bottom
+			function resetBall()
+			{
+			    stopTimer(ballMove);
+			    ballIsMoving = false;
+			    ball.setPosition(getWidth()/2, getHeight()/2);
+			}
+			//This function updates the score.
+			function updateScore()
+			{
+			    scoreDisplay.setText("Score is: " + score);
+			}
+			//This function updates the number of lives remaining, and determines if the user has lost.
+			function updateLives()
+			{
+			    if(lives < 0)
+			    {
+			        loseGame();
+			    }
+			    else
+			    {
+			        lifeDisplay.setText("Lives remaining: " + lives);
+			    }
+			}
+			//This function allows the user to move the paddle by moving his mouse.
+			function movePaddle(e)
+			{
+			    paddle.setPosition(e.getX() - PADDLE_WIDTH/2, getHeight() - PADDLE_HEIGHT - PADDLE_OFFSET)
+			    if(paddle.getX() > getWidth() - PADDLE_WIDTH)
+			    {
+			        paddle.setPosition(getWidth() - PADDLE_WIDTH, getHeight() - PADDLE_HEIGHT - PADDLE_OFFSET);
+			    }
+			    if(paddle.getX() < 0)
+			    {
+			        paddle.setPosition(0, getHeight() - PADDLE_HEIGHT - PADDLE_OFFSET);
+			    }
+			}
+			//This function checks to see if the user has won the game.
+			function checkIfWon()
+			{
+			    if(bricks == 0)
+			    {
+			        winGame();
+			    }
+			}
+			//This function displays the win message.
+			function winGame()
+			{
+			    removeAll();
+			    var won = new Text("You Win!", "30pt Arial");
+			    won.setPosition(125, getHeight()/2);
+			    add(won);
+			}
+			//This function displays the lose message.
+			function loseGame()
+			{
+			    removeAll();
+			    var lost = new Text("You Lose. Score: " + score, "30pt Arial")
+			    lost.setPosition(30, getHeight()/2);
+			    add(lost);
+			}
+
+		    if (typeof start === 'function') {
+		        start();
+		    }
+		};
+		</script>
+		<br>
+		<div class="spacer"></div>
+	</div>
+	</body>
+</html>
