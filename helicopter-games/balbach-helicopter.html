@@ -1,36 +1,42 @@
+<!DOCTYPE html>
 <html>
 <head>
 
 	<meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-	
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-
-    <!-- Bootstrap JavaScript -->
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="../w3.css">
+	<link rel="stylesheet" href="../style.css">
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
 	<title>Balbach Helicopter</title>
-	
+
 	<link rel="stylesheet" type="text/css" href="../style.css">
-	
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
 	<script type="text/javascript" src="https://static.codehs.com/gulp/0444eb492be7b35724333daa087b82121c1743cb/chs-js-lib/chs.js"></script>
 
-
 	<style>
-	canvas 
+
+	body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
+	.w3-row-padding img {margin-bottom: 12px}
+	/* Set the width of the sidebar to 120px */
+	.w3-sidebar {width: 120px;background: #222;}
+	/* Add a left margin to the "page content" that matches the width of the sidebar (120px) */
+	#main {margin-left: 120px}
+	/* Remove margins from "page content" on small screens */
+	@media only screen and (max-width: 600px) {#main {margin-left: 0}}
+
+	canvas
 	{
 	    border: 1px solid black;
 	    display: block;
-		margin-left:auto;
-		margin-right:auto;
+			margin-left:auto;
+			margin-right:auto;
 	    vertical-align: top;
 	}
-	
-	pre 
+
+	pre
 	{
 	    border: 1px solid black;
 	    display: inline-block;
@@ -42,68 +48,95 @@
 
 </head>
 
-<body>
-	<div class="container">
-		<br>
-		<br>
-		<div class="row">
-			<img  class="logo" src = "https://www.gprep.org/uploaded/Website_Redesign_Spring_2016/seal_PMS_282_blue.jpg" width ="200 px">
-		</div>
-		<br>
-		<div class="row">
-			<h1 class="text-center">
-	            Computer Science Fundamentals
-				<br>
-				<small>Summer 2020</small>
-	        </h1>
-		</div>
-		<div class="btn-group btn-group-justified">
-			<a href="../index.html" class="btn btn-primary btn-lg"> <span class="glyphicon glyphicon-home"></span> Home </a>
-			<a href="../helicopter.html" class="btn btn-primary btn-lg"> Helicopter </a>
-			<a href="../tic-tac-toe.html" class="btn btn-primary btn-lg">Tic-tac-toe</a>
-			<a href="../break-out.html" class="btn btn-primary btn-lg">Breakout</a>
-			<a href="../snake.html" class="btn btn-primary btn-lg">Snake</a>
-		</div>
-		<div class="spacer"></div>
-		<canvas 
+<body class="w3-black">
+	<!-- Icon Bar (Sidebar - hidden on small screens) -->
+	<nav class="w3-sidebar w3-bar-block w3-small w3-hide-small w3-center">
+	  <!-- Avatar image in top left corner -->
+	  <img src="../prep_grey.JPG" class="avatar">
+	  <a href="../index.html#" class="w3-bar-item w3-button w3-padding-large w3-black">
+	    <i class="fa fa-home w3-xxlarge"></i>
+	    <p>HOME</p>
+	  </a>
+	  <a href="../index.html#helicopter" class="w3-bar-item w3-button w3-padding-large w3-hover-black">
+	    <img src="../helicopter.PNG" style="width:90%">
+	    <p>HELICOPTER</p>
+	  </a>
+	  <a href="../index.html#tic-tac-toe" class="w3-bar-item w3-button w3-padding-large w3-hover-black">
+	    <img src="../tic-tac-toe.PNG" style="width:90%">
+	    <p>TIC-TAC-TOE</p>
+	  </a>
+	  <a href="../index.html#snake" class="w3-bar-item w3-button w3-padding-large w3-hover-black">
+	    <img src="../snake.PNG" style="width:90%">
+	    <p>SNAKE</p>
+	  </a>
+	  <a href="../index.html#breakout" class="w3-bar-item w3-button w3-padding-large w3-hover-black">
+	    <img src="../break-out.PNG" style="width:90%">
+	    <p>BREAKOUT</p>
+	  </a>
+	</nav>
+
+	<!-- Navbar on small screens (Hidden on medium and large screens) -->
+	<div class="w3-top w3-hide-large w3-hide-medium" id="myNavbar">
+	  <div class="w3-bar w3-black w3-opacity w3-hover-opacity-off w3-center w3-small">
+	    <a href="../index.html#" class="w3-bar-item w3-button" style="width:20% !important">HOME</a>
+	    <a href="../index.html#helicopter" class="w3-bar-item w3-button" style="width:20% !important">HELICOPTER</a>
+	    <a href="../index.html#tic-tac-toe" class="w3-bar-item w3-button" style="width:20% !important">TIC-TAC-TOE</a>
+	    <a href="../index.html#breakout" class="w3-bar-item w3-button" style="width:20% !important">BREAKOUT</a>
+			<a href="../index.html#snake" class="w3-bar-item w3-button" style="width:20% !important">SNAKE</a>
+	  </div>
+	</div>
+
+	<header class="w3-container w3-padding-32 w3-center w3-black">
+		<img src="../prep_grey.JPG" class="w3-image logo">
+		<h1 class="w3-jumbo"><span class="w3-hide-small"></span> Helicopter Game 1</h1>
+		<h3>
+			Click on the screen to control the motion of the helicopter.
+			<br>
+			Make sure you avoid crashing!
+			<br>
+			To restart the game press the 'r' button!  Good luck!
+		</h3>
+	</header>
+
+		<canvas
 		width="400"
 		height="500"
 		class="displaygame"></canvas>
-		
+
 		<script>
 		window.onload = function() {
-		
+
 		    var obstacles = [];
 		var OBSTACLE_WIDTH = 30;
 		var OBSTACLE_HEIGHT = 100;
 		var NUM_OBSTACLES = 3;
-		
+
 		var TERRAIN_WIDTH = 10;
 		var MIN_TERRAIN_HEIGHT = 29;
 		var MAX_TERRAIN_HEIGHT = 50;
 		var top_terrain = [];
 		var bottom_terrain = [];
-		
+
 		var DELAY = 40;
 		var SPEED = 5;
-		
+
 		var choppa;
 		var CHOPPA_WIDTH = 50;
 		var CHOPPA_HEIGHT = 25;
-		
+
 		var DUST_RADIUS = 3;
 		var DUST_BUFFER = 10;
 		var dust = [];
-		
+
 		var dx = -SPEED;
 		var dy = 0;
 		var MAX_DY = 8;
-		
+
 		var points = 0;
 		var score;
-		
+
 		var clicking = false;
-		
+
 		function start()
 		{
 		    chooseDifficulty();
@@ -112,7 +145,7 @@
 			mouseDownMethod(moveUp);
 			mouseUpMethod(moveDown);
 		}
-		
+
 		function chooseDifficulty()
 		{
 		    var difficulty = prompt("Which difficulty would you like to play on, easy, normal, or hard? ");
@@ -138,26 +171,26 @@
 		        }
 		    }
 		}
-		
+
 		function setup()
 		{
 		    setBackgroundColor(Color.black);
-		    
+
 		    choppa = new WebImage("https://gprepcsf2020.com/images/helicopter.png");
 		    choppa.setSize(CHOPPA_WIDTH, CHOPPA_HEIGHT);
 		    choppa.setPosition(getWidth()/3 - CHOPPA_WIDTH/2, getHeight()/2 - CHOPPA_HEIGHT/2);
 		    choppa.setColor(Color.blue);
 		    add(choppa);
-		    
+
 		    addObstacle();
 		    addTerrain();
-		    
+
 		    score = new Text("Score is: " + points);
 		    score.setPosition(0, score.getHeight());
 		    score.setColor(Color.white);
 		    add(score);
 		}
-		
+
 		function game()
 		{
 		    if(checkWalls()||checkObstacles())
@@ -173,20 +206,20 @@
 		    points++;
 		    updateScore();
 		}
-		
+
 		function addObstacle()
 		{
 		    for(var i = 0; i < NUM_OBSTACLES; i++)
 		    {
 		        var obstacle = new Rectangle(OBSTACLE_WIDTH, OBSTACLE_HEIGHT);
-		        obstacle.setPosition(getWidth() + i*(getWidth()/NUM_OBSTACLES), 
+		        obstacle.setPosition(getWidth() + i*(getWidth()/NUM_OBSTACLES),
 		                                             Randomizer.nextInt(MAX_TERRAIN_HEIGHT + 10, getHeight() - OBSTACLE_HEIGHT - MAX_TERRAIN_HEIGHT - 10));
 		        obstacle.setColor(Color.green);
 		        obstacles.push(obstacle);
 		        add(obstacle);
-		    } 
+		    }
 		}
-		
+
 		function addTerrain()
 		{
 		    for(var i = 0; i <= 1 + getWidth()/TERRAIN_WIDTH; i++)
@@ -197,7 +230,7 @@
 		        topTerrain.setColor(Color.green);
 		        top_terrain.push(topTerrain);
 		        add(topTerrain);
-		        
+
 		        height = Randomizer.nextInt(MIN_TERRAIN_HEIGHT, MAX_TERRAIN_HEIGHT);
 		        var bottomTerrain = new Rectangle(TERRAIN_WIDTH, height);
 		        bottomTerrain.setPosition(TERRAIN_WIDTH * i, getHeight() - height);
@@ -206,7 +239,7 @@
 		        add(bottomTerrain);
 		    }
 		}
-		
+
 		function moveObstacle()
 		{
 		    for(var i = 0; i < obstacles.length; i++)
@@ -219,7 +252,7 @@
 		        }
 		    }
 		}
-		
+
 		function moveTerrain()
 		{
 		    for(var i = 0; i < top_terrain.length; i++)
@@ -231,7 +264,7 @@
 		            obj.setPosition(getWidth(), 0);
 		        }
 		    }
-		    
+
 		    for(var i = 0; i < bottom_terrain.length; i++)
 		    {
 		        var obj = bottom_terrain[i];
@@ -242,7 +275,7 @@
 		        }
 		    }
 		}
-		
+
 		function fly()
 		{
 		    choppa.move(0, dy);
@@ -263,7 +296,7 @@
 		        }
 		    }
 		}
-		
+
 		function addDust()
 		{
 		    var d = new Circle(DUST_RADIUS)
@@ -272,7 +305,7 @@
 		    dust.push(d);
 		    add(d);
 		}
-		
+
 		function moveDust()
 		{
 		    for(var i = 0; i < dust.length; i++)
@@ -292,42 +325,42 @@
 		{
 		    score.setText("Score is: " + points);
 		}
-		
+
 		function moveUp()
 		{
 		    clicking = true;
 		}
-		
+
 		function moveDown()
 		{
 		    clicking = false;
 		}
-		
+
 		function checkWalls()
 		{
 		    var hitTop = choppa.getY() < 0;
 		    var hitBottom = choppa.getY() > getHeight() - CHOPPA_HEIGHT;
 		    return hitTop||hitBottom;
 		}
-		
+
 		function checkObstacles()
 		{
-		    if(getElementAt(choppa.getX(), choppa.getY()) != null && 
+		    if(getElementAt(choppa.getX(), choppa.getY()) != null &&
 		       getElementAt(choppa.getX(), choppa.getY()) != choppa)
 		    {
 		        return true;
 		    }
-		    else if(getElementAt(choppa.getX() + CHOPPA_WIDTH, choppa.getY()) != null && 
+		    else if(getElementAt(choppa.getX() + CHOPPA_WIDTH, choppa.getY()) != null &&
 		            getElementAt(choppa.getX() + CHOPPA_WIDTH, choppa.getY()) != choppa)
 		    {
 		        return true;
 		    }
-		    else if(getElementAt(choppa.getX(), choppa.getY() + CHOPPA_HEIGHT) != null && 
+		    else if(getElementAt(choppa.getX(), choppa.getY() + CHOPPA_HEIGHT) != null &&
 		            getElementAt(choppa.getX(), choppa.getY() + CHOPPA_HEIGHT) != choppa)
 		    {
 		        return true;
 		    }
-		    else if(getElementAt(choppa.getX() + CHOPPA_WIDTH, choppa.getY() + CHOPPA_HEIGHT) != null && 
+		    else if(getElementAt(choppa.getX() + CHOPPA_WIDTH, choppa.getY() + CHOPPA_HEIGHT) != null &&
 		            getElementAt(choppa.getX() + CHOPPA_WIDTH, choppa.getY() + CHOPPA_HEIGHT) != choppa)
 		    {
 		        return true;
@@ -336,9 +369,9 @@
 		    {
 		        return false;
 		    }
-		    
+
 		}
-		
+
 		function lose()
 		{
 		    stopTimer(game);
@@ -346,15 +379,15 @@
 		    lost.setPosition(getWidth()/2 - lost.getWidth()/2, getHeight()/2);
 		    lost.setColor(Color.red);
 		    add(lost);
-		    
+
 		    var retry = new Text("Press 'r' to restart.")
 		    retry.setPosition(getWidth()/2 - retry.getWidth()/2, getHeight()/2 + retry.getHeight());
 		    retry.setColor(Color.red);
 		    add(retry);
-		    
+
 		    keyDownMethod(restart);
 		}
-		
+
 		function restart(e)
 		{
 		    if(e.keyCode == Keyboard.letter('r'))
@@ -365,8 +398,8 @@
 		        setTimer(game, DELAY);
 		    }
 		}
-		
-		
+
+
 		    if (typeof start === 'function') {
 		        start();
 		    }

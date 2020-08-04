@@ -1,36 +1,42 @@
+<!DOCTYPE html>
 <html>
 <head>
 
 	<meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-	
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="../w3.css">
+	<link rel="stylesheet" href="../style.css">
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
-    <!-- Bootstrap JavaScript -->
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+	<title>Lu Tic-Tac-Toe</title>
 
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
-
-	<title>Lu Tic-tac-toe</title>
-	
 	<link rel="stylesheet" type="text/css" href="../style.css">
-	
+
 	<script type="text/javascript" src="https://static.codehs.com/gulp/0444eb492be7b35724333daa087b82121c1743cb/chs-js-lib/chs.js"></script>
-
-
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
 	<style>
-	canvas 
+
+	body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
+	.w3-row-padding img {margin-bottom: 12px}
+	/* Set the width of the sidebar to 120px */
+	.w3-sidebar {width: 120px;background: #222;}
+	/* Add a left margin to the "page content" that matches the width of the sidebar (120px) */
+	#main {margin-left: 120px}
+	/* Remove margins from "page content" on small screens */
+	@media only screen and (max-width: 600px) {#main {margin-left: 0}}
+
+	canvas
 	{
 	    border: 1px solid black;
 	    display: block;
-		margin-left:auto;
-		margin-right:auto;
+			margin-left:auto;
+			margin-right:auto;
 	    vertical-align: top;
 	}
-	
-	pre 
+
+	pre
 	{
 	    border: 1px solid black;
 	    display: inline-block;
@@ -42,140 +48,165 @@
 
 </head>
 
-<body>
-	<div class="container">
-		<br>
-		<br>
-		<div class="row">
-			<img  class="logo" src = "https://www.gprep.org/uploaded/Website_Redesign_Spring_2016/seal_PMS_282_blue.jpg" width ="200 px">
-		</div>
-		<br>
-		<div class="row">
-			<h1 class="text-center">
-	            Computer Science Fundamentals
-				<br>
-				<small>Summer 2020</small>
-	        </h1>
-		</div>
-		<div class="btn-group btn-group-justified">
-			<a href="../index.html" class="btn btn-primary btn-lg"> <span class="glyphicon glyphicon-home"></span> Home </a>
-			<a href="../helicopter.html" class="btn btn-primary btn-lg"> Helicopter </a>
-			<a href="../tic-tac-toe.html" class="btn btn-primary btn-lg">Tic-tac-toe</a>
-			<a href="../break-out.html" class="btn btn-primary btn-lg">Breakout</a>
-			<a href="../snake.html" class="btn btn-primary btn-lg">Snake</a>
-		</div>
-		<div class="spacer"></div>
-		<canvas 
+<body class="w3-black">
+	<!-- Icon Bar (Sidebar - hidden on small screens) -->
+	<nav class="w3-sidebar w3-bar-block w3-small w3-hide-small w3-center">
+	  <!-- Avatar image in top left corner -->
+	  <img src="../prep_grey.JPG" class="avatar">
+	  <a href="../index.html#" class="w3-bar-item w3-button w3-padding-large w3-black">
+	    <i class="fa fa-home w3-xxlarge"></i>
+	    <p>HOME</p>
+	  </a>
+	  <a href="../index.html#helicopter" class="w3-bar-item w3-button w3-padding-large w3-hover-black">
+	    <img src="../helicopter.PNG" style="width:90%">
+	    <p>HELICOPTER</p>
+	  </a>
+	  <a href="../index.html#tic-tac-toe" class="w3-bar-item w3-button w3-padding-large w3-hover-black">
+	    <img src="../tic-tac-toe.PNG" style="width:90%">
+	    <p>TIC-TAC-TOE</p>
+	  </a>
+	  <a href="../index.html#snake" class="w3-bar-item w3-button w3-padding-large w3-hover-black">
+	    <img src="../snake.PNG" style="width:90%">
+	    <p>SNAKE</p>
+	  </a>
+	  <a href="../index.html#breakout" class="w3-bar-item w3-button w3-padding-large w3-hover-black">
+	    <img src="../break-out.PNG" style="width:90%">
+	    <p>BREAKOUT</p>
+	  </a>
+	</nav>
+
+	<!-- Navbar on small screens (Hidden on medium and large screens) -->
+	<div class="w3-top w3-hide-large w3-hide-medium" id="myNavbar">
+	  <div class="w3-bar w3-black w3-opacity w3-hover-opacity-off w3-center w3-small">
+	    <a href="../index.html#" class="w3-bar-item w3-button" style="width:20% !important">HOME</a>
+	    <a href="../index.html#helicopter" class="w3-bar-item w3-button" style="width:20% !important">HELICOPTER</a>
+	    <a href="../index.html#tic-tac-toe" class="w3-bar-item w3-button" style="width:20% !important">TIC-TAC-TOE</a>
+	    <a href="../index.html#breakout" class="w3-bar-item w3-button" style="width:20% !important">BREAKOUT</a>
+			<a href="../index.html#snake" class="w3-bar-item w3-button" style="width:20% !important">SNAKE</a>
+	  </div>
+	</div>
+
+	<header class="w3-container w3-padding-32 w3-center w3-black">
+		<img src="../prep_grey.JPG" class="w3-image logo">
+		<h1 class="w3-jumbo"><span class="w3-hide-small"></span> Tic-Tac-Toe Game 5</h1>
+		<h3>
+			Classic Tic-Tac-Toe game enjoy!
+		</h3>
+	</header>
+
+		<canvas
 		width="400"
 		height="500"
 		class="displaygame"></canvas>
-		
+
 		<script>
 		window.onload = function() {
 
-			var WIDTH = 400;
-			var HEIGHT = 400;
-			setSize(WIDTH, HEIGHT);
-			
-			var NUM_ROWS = 3;
-			var NUM_COLS = 3;
-			
-			var WINNING_LINE_WIDTH = 10;
-			var WINNING_LINE_COLOR = Color.red;
-			
-			var OFFSET = 50;
-			var CIRCLE_BORDER = 5;
-			var BOX_SIZE = WIDTH / NUM_COLS;
-			var county = 0;
-			
-			function start(){
-				var x1 = getWidth ()/3;
-				var y1 = getHeight ()/3;
-				
-				var x = getWidth();
-				var y = getHeight();
-				
-				lines (x1, 0, x1, y);
-				lines (x1*2, 0, x1*2, y);
-				lines (0, y1, x, y1);
-				lines (0, y1*2, x, y1*2);
-				
-				mouseClickMethod (handleClick);
-				
-			}
-			
-			function handleClick (e){
-			    var y = e.getY ();
-			    var x = e.getX ();
-			    
-			    var col = getColForClick(x);
-			    var row = getRowForClick(y);
-			    
-			    if (county % 2 == 0){
-			        drawX(row,col);
-			    }else{
-			        drawO(row,col);
-			    }
-			    county++;
-			}
-			
-			function drawO (row, col){
-			    var centerX = col * BOX_SIZE + BOX_SIZE /2;
-			    var centerY = row * BOX_SIZE + BOX_SIZE /2;
-			    
-			    var circle = new Circle(OFFSET);
-			    circle.setPosition(centerX, centerY);
-			    circle.setColor (Color.white);
-			    circle.setBorderWidth (CIRCLE_BORDER);
-			    add (circle);
-			}
-			
-			function drawX (row, col){
-			    var centerX = col * BOX_SIZE + BOX_SIZE /2;
-			    var centerY = row * BOX_SIZE + BOX_SIZE /2;
-			    var left = centerX - OFFSET;
-			    var right = centerX + OFFSET;
-			    var top = centerY - OFFSET;
-			    var bottom = centerY + OFFSET;
-			    
-			    var lineOne = new Line (left, top, right, bottom);
-			    add (lineOne);
-			    
-			    var lineTwo = new Line (right, top, left, bottom);
-			    add (lineTwo);
-			}
-			
-			function getColForClick(x){
-			    var location = x/BOX_SIZE;
-			    if (location < 1){
-			        return 0;
-			    }else if (location > 1 && location < 2){
-			        return 1;
-			    }else{
-			        return 2;
-			    }
-			}
-			
-			function getRowForClick (y){
-			    var location = y/BOX_SIZE;
-			    if (location <1){
-			        return 0;
-			    }else if (location > 1 && location < 2){
-			        return 1;
-			    }else{
-			        return 2;
-			    }
-			}
-			
-			
-			function lines (x, y, x1, y1){
-			    var line = new Line (x,y,x1,y1);
-			    add (line);
-			}		
+		setBackgroundColor(Color.white);
 
-			if (typeof start === 'function') {
-			        start();
-			}
+		var WIDTH = 400;
+		var HEIGHT = 400;
+		setSize(WIDTH, HEIGHT);
+
+		var NUM_ROWS = 3;
+		var NUM_COLS = 3;
+
+		var WINNING_LINE_WIDTH = 10;
+		var WINNING_LINE_COLOR = Color.red;
+
+		var OFFSET = 50;
+		var CIRCLE_BORDER = 5;
+		var BOX_SIZE = WIDTH / NUM_COLS;
+		var county = 0;
+
+		function start(){
+			var x1 = getWidth ()/3;
+			var y1 = getHeight ()/3;
+
+			var x = getWidth();
+			var y = getHeight();
+
+			lines (x1, 0, x1, y);
+			lines (x1*2, 0, x1*2, y);
+			lines (0, y1, x, y1);
+			lines (0, y1*2, x, y1*2);
+
+			mouseClickMethod (handleClick);
+
+		}
+
+		function handleClick (e){
+		    var y = e.getY ();
+		    var x = e.getX ();
+
+		    var col = getColForClick(x);
+		    var row = getRowForClick(y);
+
+		    if (county % 2 == 0){
+		        drawX(row,col);
+		    }else{
+		        drawO(row,col);
+		    }
+		    county++;
+		}
+
+		function drawO (row, col){
+		    var centerX = col * BOX_SIZE + BOX_SIZE /2;
+		    var centerY = row * BOX_SIZE + BOX_SIZE /2;
+
+		    var circle = new Circle(OFFSET);
+		    circle.setPosition(centerX, centerY);
+		    circle.setColor (Color.white);
+		    circle.setBorderWidth (CIRCLE_BORDER);
+		    add (circle);
+		}
+
+		function drawX (row, col){
+		    var centerX = col * BOX_SIZE + BOX_SIZE /2;
+		    var centerY = row * BOX_SIZE + BOX_SIZE /2;
+		    var left = centerX - OFFSET;
+		    var right = centerX + OFFSET;
+		    var top = centerY - OFFSET;
+		    var bottom = centerY + OFFSET;
+
+		    var lineOne = new Line (left, top, right, bottom);
+		    add (lineOne);
+
+		    var lineTwo = new Line (right, top, left, bottom);
+		    add (lineTwo);
+		}
+
+		function getColForClick(x){
+		    var location = x/BOX_SIZE;
+		    if (location < 1){
+		        return 0;
+		    }else if (location > 1 && location < 2){
+		        return 1;
+		    }else{
+		        return 2;
+		    }
+		}
+
+		function getRowForClick (y){
+		    var location = y/BOX_SIZE;
+		    if (location <1){
+		        return 0;
+		    }else if (location > 1 && location < 2){
+		        return 1;
+		    }else{
+		        return 2;
+		    }
+		}
+
+
+		function lines (x, y, x1, y1){
+		    var line = new Line (x,y,x1,y1);
+		    add (line);
+		}
+
+		    if (typeof start === 'function') {
+		        start();
+		    }
 		};
 		</script>
 		<br>

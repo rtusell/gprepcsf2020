@@ -1,36 +1,42 @@
+<!DOCTYPE html>
 <html>
 <head>
 
 	<meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-	
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-
-    <!-- Bootstrap JavaScript -->
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="../w3.css">
+	<link rel="stylesheet" href="../style.css">
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
 	<title>Sullivan Helicopter</title>
-	
+
 	<link rel="stylesheet" type="text/css" href="../style.css">
-	
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
 	<script type="text/javascript" src="https://static.codehs.com/gulp/0444eb492be7b35724333daa087b82121c1743cb/chs-js-lib/chs.js"></script>
 
-
 	<style>
-	canvas 
+
+	body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
+	.w3-row-padding img {margin-bottom: 12px}
+	/* Set the width of the sidebar to 120px */
+	.w3-sidebar {width: 120px;background: #222;}
+	/* Add a left margin to the "page content" that matches the width of the sidebar (120px) */
+	#main {margin-left: 120px}
+	/* Remove margins from "page content" on small screens */
+	@media only screen and (max-width: 600px) {#main {margin-left: 0}}
+
+	canvas
 	{
 	    border: 1px solid black;
 	    display: block;
-		margin-left:auto;
-		margin-right:auto;
+			margin-left:auto;
+			margin-right:auto;
 	    vertical-align: top;
 	}
-	
-	pre 
+
+	pre
 	{
 	    border: 1px solid black;
 	    display: inline-block;
@@ -42,29 +48,64 @@
 
 </head>
 
-<body>
-	<div class="container">
-		<br>
-		<br>
-		<div class="row">
-			<img  class="logo" src = "https://www.gprep.org/uploaded/Website_Redesign_Spring_2016/seal_PMS_282_blue.jpg" width ="200 px">
-		</div>
-		<br>
-		<div class="row">
-			<h1 class="text-center">
-	            Computer Science Fundamentals
-				<br>
-				<small>Summer 2020</small>
-	        </h1>
-		</div>
+<body class="w3-black">
+	<!-- Icon Bar (Sidebar - hidden on small screens) -->
+	<nav class="w3-sidebar w3-bar-block w3-small w3-hide-small w3-center">
+	  <!-- Avatar image in top left corner -->
+	  <img src="../prep_grey.JPG" class="avatar">
+	  <a href="../index.html#" class="w3-bar-item w3-button w3-padding-large w3-black">
+	    <i class="fa fa-home w3-xxlarge"></i>
+	    <p>HOME</p>
+	  </a>
+	  <a href="../index.html#helicopter" class="w3-bar-item w3-button w3-padding-large w3-hover-black">
+	    <img src="../helicopter.PNG" style="width:90%">
+	    <p>HELICOPTER</p>
+	  </a>
+	  <a href="../index.html#tic-tac-toe" class="w3-bar-item w3-button w3-padding-large w3-hover-black">
+	    <img src="../tic-tac-toe.PNG" style="width:90%">
+	    <p>TIC-TAC-TOE</p>
+	  </a>
+	  <a href="../index.html#snake" class="w3-bar-item w3-button w3-padding-large w3-hover-black">
+	    <img src="../snake.PNG" style="width:90%">
+	    <p>SNAKE</p>
+	  </a>
+	  <a href="../index.html#breakout" class="w3-bar-item w3-button w3-padding-large w3-hover-black">
+	    <img src="../break-out.PNG" style="width:90%">
+	    <p>BREAKOUT</p>
+	  </a>
+	</nav>
 
-		<canvas 
+	<!-- Navbar on small screens (Hidden on medium and large screens) -->
+	<div class="w3-top w3-hide-large w3-hide-medium" id="myNavbar">
+	  <div class="w3-bar w3-black w3-opacity w3-hover-opacity-off w3-center w3-small">
+	    <a href="../index.html#" class="w3-bar-item w3-button" style="width:20% !important">HOME</a>
+	    <a href="../index.html#helicopter" class="w3-bar-item w3-button" style="width:20% !important">HELICOPTER</a>
+	    <a href="../index.html#tic-tac-toe" class="w3-bar-item w3-button" style="width:20% !important">TIC-TAC-TOE</a>
+	    <a href="../index.html#breakout" class="w3-bar-item w3-button" style="width:20% !important">BREAKOUT</a>
+			<a href="../index.html#snake" class="w3-bar-item w3-button" style="width:20% !important">SNAKE</a>
+	  </div>
+	</div>
+
+	<header class="w3-container w3-padding-32 w3-center w3-black">
+		<img src="../prep_grey.JPG" class="w3-image logo">
+		<h1 class="w3-jumbo"><span class="w3-hide-small"></span> Helicopter Game 4</h1>
+		<h3>
+			Press the r button your keyboard to control the motion of the helicopter.
+			<br>
+			Make sure you avoid crashing!
+			<br>
+			To restart click anywhere on the screen.
+		</h3>
+	</header>
+
+		<canvas
 		width="400"
 		height="500"
 		class="displaygame"></canvas>
-		
+
 		<script>
-			window.onload = function() {
+		window.onload = function() {
+
 			var DELAY = 40;
 			var SPEED = 5;
 			var MAX_DY = 12;
@@ -75,7 +116,7 @@
 			var DUST_RADIUS = 3;
 			var DUST_BUFFER = 10;
 			var NUM_OBSTACLES = 3;
-			
+
 			var points = 0;
 			var score;
 			var dy = 0;
@@ -83,7 +124,7 @@
 			var Y = 0;
 			var click = false;
 			var click2 = false;
-			
+
 			var copter;
 			var warning;
 			var obj;
@@ -101,17 +142,17 @@
 			var pcOrPhone;
 			var dy2 = 3;
 			var click4 = true;
-			
+
 			var obstacles = [ ];
 			var top_terrain = [ ];
 			var bottom_terrain = [ ];
 			var dust = [ ];
-			
+
 			function start()
 			{
 			    menu();
 			    mouseClickMethod(setUp2);
-			
+
 			}
 			function setUp2(e)
 			{
@@ -139,7 +180,7 @@
 			}
 			function setUp()
 			{
-			
+
 			    setBackgroundColor(Color.black);
 			    copter = new WebImage("https://gprepcsf2020.com/images/helicopter.png");
 			    copter.setSize(55,25);
@@ -148,7 +189,7 @@
 			    add(copter);
 			    addTerrain();
 			    addObstacles();
-			    
+
 			    score = new Text("0");
 			    score.setColor(Color.white);
 			    score.setPosition(10, 70);
@@ -156,7 +197,7 @@
 			}
 			function game()
 			{
-			    
+
 			    updateScore();
 			    if(getCollider())
 			    {
@@ -208,13 +249,13 @@
 			    }
 			    else
 			    {
-			
+
 			        remove(warning);
 			        warning = new Text("Not valid key to press", "20pt Arial");
 			        warning.setPosition(getWidth()/2 - warning.getWidth()/2, getHeight());
 			        warning.setColor(Color.white);
 			        add(warning);
-			        
+
 			    }
 			}
 			function onKeyUp()
@@ -227,12 +268,12 @@
 			    box2.setPosition(getWidth(), Randomizer.nextInt(getHeight() - 50, 50));
 			    setTimer(colorChange, 700);
 			    add(box2);
-			    
+
 			    box = new Rectangle(20,20);
 			    box.setPosition(getWidth(), Randomizer.nextInt(getHeight() - 50, 50));
 			    box.setColor(Color.blue);
 			    add(box);
-			    
+
 			    for(var i = 0; i < NUM_OBSTACLES; i++)
 			    {
 			        obstacle = new Rectangle(30, getHeight()/4);
@@ -298,7 +339,7 @@
 			    text33.setColor(Color.white);
 			    if(points >= 5000)
 			    {
-			
+
 			        add(text33);
 			    }
 			    remove(warning);
@@ -315,7 +356,7 @@
 			}
 			function setUp3(e)
 			{
-			
+
 			    if(click2 == false)
 			    {
 			        SPEED = 5;
@@ -325,7 +366,7 @@
 			        dy = 0;
 			        clicking = false;
 			        Y = 0;
-			
+
 			        if(pcOrPhone == "PC")
 			        {
 			            removeMenu();
@@ -402,8 +443,8 @@
 			        textBonus.setColor(Color.white);
 			        add(textBonus);
 			    }
-			    
-			    
+
+
 			    if(topLeft == box2)
 			    {
 			        remove(textBonus);
@@ -448,7 +489,7 @@
 			        name = new Text("Helicopter Hurdle made by Jack Sullivan 7-9-2020", "12pt Arial");
 			        name.setPosition(getWidth()/2 - name.getWidth()/2, getHeight()/2 + name.getHeight() *2);
 			        name.setColor(Color.white);
-			        // add(name);        
+			        // add(name);
 			        remove(textBonus);
 			        points = points + 1000;
 			        textBonus = new Text("Bonus! +1000 ", "30pt Arial Bold");
@@ -470,63 +511,63 @@
 			{
 			 for(var i = 0; i < getWidth()/TERRAIN_WIDTH; i++)
 			    {
-			        
+
 			        var terrain = new Rectangle(TERRAIN_WIDTH, Randomizer.nextInt(MAX_TERRAIN_HEIGHT, MIN_TERRAIN_HEIGHT));
 			        terrain.setPosition(TERRAIN_WIDTH * i, Y);
 			        terrain.setColor(Color.green);
-			        top_terrain.push(terrain);        
+			        top_terrain.push(terrain);
 			        add(terrain);
-			        
-			
+
+
 			        var bottomTerrain = new Rectangle(TERRAIN_WIDTH, Randomizer.nextInt(MAX_TERRAIN_HEIGHT, MIN_TERRAIN_HEIGHT));
 			        bottomTerrain.setPosition(TERRAIN_WIDTH * i, getHeight() - bottomTerrain.getHeight());
 			        bottomTerrain.setColor(Color.green);
 			        bottom_terrain.push(bottomTerrain);
 			        add(bottomTerrain);
 			    }
-			
+
 			}
 			function moveTerrain()
 			{
 			    obj = new Rectangle(getWidth(), 20);
 			    obj.setColor(Color.red);
 			    obj.setPosition(0 , 0);
-			    add(obj); 
+			    add(obj);
 			    obj2 = new Rectangle(getWidth(), 20);
 			    obj2.setColor(Color.red);
 			    obj2.setPosition(0 , getHeight() - obj2.getHeight());
 			    add(obj2);
-			
+
 			    for(var i = 0; i < top_terrain.length; i++)
 			    {
-			
+
 			        var object = top_terrain[i];
-			        object.move(-SPEED, 0); 
+			        object.move(-SPEED, 0);
 			        object.setColor(Color.red);
 			        if(object.getX() < -object.getWidth())
 			        {
 			            object.setPosition(getWidth(), 0)
 			        }
-			        
-			
-			
+
+
+
 			    }
 			        for(var k = 0; k < bottom_terrain.length; k++)
 			    {
-			
-			        
+
+
 			        var object2 = bottom_terrain[k];
-			        object2.move(-SPEED, 0);  
+			        object2.move(-SPEED, 0);
 			        object2.setColor(Color.red);
 			        if(object2.getX() < -object2.getWidth())
 			        {
 			            object2.setPosition(getWidth(), getHeight() - object2.getHeight())
 			        }
-			        
-			
-			
+
+
+
 			    }
-			
+
 			}
 			function updateScore()
 			{
@@ -534,7 +575,7 @@
 			    {
 			        points = 0;
 			    }
-			    
+
 			    points += POINTS_PER_ROUND;
 			    score.setText("Score: " + points);
 			    if(pcOrPhone == "Jack's Code ")
@@ -571,47 +612,47 @@
 			    menuBack.setPosition(0, 0);
 			    menuBack.setColor(Color.black);
 			    add(menuBack);
-			    
+
 			    phoneBack = new Text("Welcome to Helicopter Hurdle", "20pt Arial Bold");
 			    phoneBack.setPosition(getWidth()/2 - phoneBack.getWidth()/2, phoneBack.getHeight()*3);
 			    phoneBack.setColor(Color.red);
 			    add(phoneBack);
-			    
+
 			    pcBack = new WebImage("https://gprepcsf2020.com/images/helicopter.png");
 			    pcBack.setPosition(getWidth()/2 - 100, getHeight()/2 - 100);
 			    pcBack.setSize(200,100);
 			    add(pcBack);
-			    
+
 			    pc = new Rectangle(30, getHeight()/4);
 			    pc.setPosition(getWidth(), getHeight() - pc.getHeight()*1.5);
 			    pc.setColor(Color.red);
-			
-			    
+
+
 			    setTimer(move, 50);
 			    setTimer(check, 50);
-			
-			    
+
+
 			    phone = new Rectangle(30, getHeight()/4);
 			    phone.setPosition(getWidth() - getWidth()/8 *2, getHeight() - getHeight()/3);
 			    phone.setColor(Color.red);
-			
+
 			    var name = new Text("Helicopter Hurdle created by Jack Sullivan 7-10-2020", "12pt Arial");
 			    name.setPosition(getWidth()/2 - name.getWidth()/2, getHeight() - name.getHeight()  *5);
 			    name.setColor(Color.blue);
 			    add(name);
-			    
+
 			    var text30 = new Text("Click anywhere to continue", "15pt Arial Bold");
 			    text30.setPosition(getWidth()/2 - text30.getWidth()/2, getHeight() - text30.getHeight() * 5);
 			    text30.setColor(Color.blue);
-			    add(text30);   
+			    add(text30);
 			    add(pc);
 			}
-			
+
 			function move()
 			{
-			
+
 			    pc.move(-dy2, 0);
-			
+
 			}
 			function check()
 			{
@@ -620,7 +661,7 @@
 			        pc.setPosition(getWidth(), Randomizer.nextInt(getHeight() - pc.getHeight(), getHeight() - pc.getHeight()*3));
 			    }
 			}
-			
+
 			function removeMenu(e)
 			{
 			    removeAll();
@@ -629,21 +670,15 @@
 			{
 			    box2.setColor(Randomizer.nextColor());
 			}
-			if (typeof start === 'function') {
-        	start();
-    		}
-		};			
+
+
+		    if (typeof start === 'function') {
+		        start();
+		    }
+		};
 		</script>
 		<br>
-		<div class="btn-group btn-group-justified">
-			<a href="../index.html" class="btn btn-primary btn-lg"> <span class="glyphicon glyphicon-home"></span> Home </a>
-			<a href="../helicopter.html" class="btn btn-primary btn-lg"> Helicopter </a>
-			<a href="../tic-tac-toe.html" class="btn btn-primary btn-lg">Tic-tac-toe</a>
-			<a href="../break-out.html" class="btn btn-primary btn-lg">Breakout</a>
-			<a href="../snake.html" class="btn btn-primary btn-lg">Snake</a>
-		</div>
-		<div class="spacer">
-		</div>
+		<div class="spacer"></div>
 	</div>
 	</body>
 </html>

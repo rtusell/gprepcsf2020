@@ -1,57 +1,297 @@
+<!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CSF 2020</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="w3.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="style.css">
+<style>
+body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
+.w3-row-padding img {margin-bottom: 12px}
+/* Set the width of the sidebar to 120px */
+.w3-sidebar {width: 120px;background: #222;}
+/* Add a left margin to the "page content" that matches the width of the sidebar (120px) */
+#main {margin-left: 120px}
+/* Remove margins from "page content" on small screens */
+@media only screen and (max-width: 600px) {#main {margin-left: 0}}
+</style>
 
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<body class="w3-black">
 
-        <!-- Bootstrap CSS -->
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+<!-- Icon Bar (Sidebar - hidden on small screens) -->
+<nav class="w3-sidebar w3-bar-block w3-small w3-hide-small w3-center">
+  <!-- Avatar image in top left corner -->
+  <img src="prep_grey.JPG" class="avatar">
+  <a href="#" class="w3-bar-item w3-button w3-padding-large w3-black">
+    <i class="fa fa-home w3-xxlarge"></i>
+    <p>HOME</p>
+  </a>
+  <a href="#helicopter" class="w3-bar-item w3-button w3-padding-large w3-hover-black">
+    <img src="helicopter.PNG" style="width:90%">
+    <p>HELICOPTER</p>
+  </a>
+  <a href="#tic-tac-toe" class="w3-bar-item w3-button w3-padding-large w3-hover-black">
+    <img src="tic-tac-toe.PNG" style="width:90%">
+    <p>TIC-TAC-TOE</p>
+  </a>
+  <a href="#snake" class="w3-bar-item w3-button w3-padding-large w3-hover-black">
+    <img src="snake.PNG" style="width:90%">
+    <p>SNAKE</p>
+  </a>
+  <a href="#breakout" class="w3-bar-item w3-button w3-padding-large w3-hover-black">
+    <img src="break-out.PNG" style="width:90%">
+    <p>BREAKOUT</p>
+  </a>
+</nav>
 
-        <!-- Bootstrap JavaScript -->
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-    	<link rel="stylesheet" type="text/css" href="style.css">
-		<title> Computer Science Fundamentals </title>
-	</head>
-    <body>
-		<div class="container">
-			<br>
-			<br>
-			<div class="row">
-				<img  class="logo" src = "https://www.gprep.org/uploaded/Website_Redesign_Spring_2016/seal_PMS_282_blue.jpg" width ="200 px">
-			</div>
-			<br>
-			<div class="row">
-				<h1 class="text-center">
-		            Computer Science Fundamentals
-					<br>
-					<small>Summer 2020</small>
-		        </h1>
-			</div>
-			<div class="row">
-				<h2>
-					Welcome to our website for our Computer Science Fundamentals 
-		            class for summer of 2020. Below are links to four different
-					games that were programmed by students using JavaScript.
-				</h2>
-			</div>
-			<div class="row">
-				<div class="col-sm-3 text-center">
-					<a href="helicopter.html"> <u><h2>Helicopter Game</h2></u> <img src="images/helicopter.png" class="img-responsive img-thumbnail"> </a>
-				</div>
-				<div class="col-sm-3 text-center">
-					<a href="tic-tac-toe.html"> <u><h2>Tic-tac-toe</h2></u> <img src="images/tic-tac-toe.PNG" class="img-responsive img-thumbnail"> </a>				
-				</div>
-				<div class="col-sm-3 text-center">
-					<a href="break-out.html"> <u><h2>Break-out</h2></u> <img src="images/break-out.PNG" class="img-responsive img-thumbnail"> </a>				
-				</div>
-				<div class="col-sm-3 text-center">
-					<a href="snake.html"> <u><h2>Snake</h2></u> <img src="images/snake.PNG" class="img-responsive img-thumbnail"> </a>				
-				</div>
-			</div>
-			<br>
-			<br>
-		</div>
-	</body>
+<!-- Navbar on small screens (Hidden on medium and large screens) -->
+<div class="w3-top w3-hide-large w3-hide-medium" id="myNavbar">
+  <div class="w3-bar w3-black w3-opacity w3-hover-opacity-off w3-center w3-small">
+    <a href="#" class="w3-bar-item w3-button" style="width:20% !important">HOME</a>
+    <a href="#helicopter" class="w3-bar-item w3-button" style="width:20% !important">HELICOPTER</a>
+    <a href="#tic-tac-toe" class="w3-bar-item w3-button" style="width:20% !important">TIC-TAC-TOE</a>
+    <a href="#snake" class="w3-bar-item w3-button" style="width:20% !important">SNAKE</a>
+    <a href="#breakout" class="w3-bar-item w3-button" style="width:20% !important">BREAKOUT</a>
+  </div>
+</div>
+
+<!-- Page Content -->
+<div class="w3-padding-large" id="main">
+  <!-- Header/Home -->
+  <header class="w3-container w3-padding-32 w3-center w3-black" id="home">
+    <img src="prep_grey.JPG" class="w3-image logo">
+    <h1 class="w3-jumbo"><span class="w3-hide-small"></span> Computer Science Fundamentals </h1>
+    <h2>Summer 2020</h2>
+  </header>
+
+  <!-- About Section -->
+  <div class="w3-content w3-justify w3-text-grey w3-padding-64" id="about">
+    <h2 class="w3-text-light-grey">Welcome!</h2>
+    <hr style="width:300px" class="w3-opacity">
+    <h4>
+      Welcome to our website for our Computer Science Fundamentals
+      class for summer of 2020. The students were asked to program two different
+      games as their final project for the session.  For their first game everyone
+      had to code a game of breakout.  For their second game students had a choice
+      to program either: snake, tic-tac-toe or a helicopter game.  Feel free to
+      browse our webpage and play with some of the games created by our students.
+      Thank you to the Prep community for the support during the summer and to
+      CodeHS and w3schools for suppling the curriculum and HTML, CSS and JavaScript
+      documentation.
+    </h4>
+  <!-- End About Section -->
+  </div>
+
+  <!-- Helicopter Section -->
+  <div class="w3-padding-64 w3-content" id="helicopter">
+    <h2 class="w3-text-light-grey">Helicopter Games</h2>
+    <hr style="width:300px" class="w3-opacity">
+
+    <!-- Grid for photos -->
+    <div class="w3-row-padding" style="margin:0 -16px">
+      <div class="w3-half">
+        <div class="w3-half-element">
+          <a href="helicopter-games/balbach-helicopter.html">
+              <h2> Helicopter Game 1 </h2>
+              <img src="helicopter.PNG" style="width:90%">
+          </a>
+        </div>
+        <div class="w3-half-element">
+          <a href="helicopter-games/baco-gavilan-helicopter.html">
+              <h2> Helicopter Game 3 </h2>
+              <img src="helicopter.PNG" style="width:90%">
+          </a>
+        </div>
+        <div class="w3-half-element">
+          <a href="helicopter-games/kambeyanda-helicopter.html">
+              <h2> Helicopter Game 5 </h2>
+              <img src="helicopter.PNG" style="width:90%">
+          </a>
+        </div>
+      </div>
+
+      <div class="w3-half">
+        <div class="w3-half-element">
+          <a href="helicopter-games/raza-helicopter.html">
+              <h2> Helicopter Game 2 </h2>
+              <img src="helicopter.PNG" style="width:90%">
+          </a>
+        </div>
+        <div class="w3-half-element">
+          <a href="helicopter-games/sullivan-helicopter.html">
+              <h2> Helicopter Game 4 </h2>
+              <img src="helicopter.PNG" style="width:90%">
+          </a>
+        </div>
+        <div class="w3-half-element">
+          <a href="helicopter-games/wall-helicopter.html">
+              <h2> Helicopter Game 6 </h2>
+              <img src="helicopter.PNG" style="width:90%">
+          </a>
+        </div>
+      </div>
+    <!-- End photo grid -->
+    </div>
+  <!-- End Helicopter Section -->
+  </div>
+
+  <!-- Tic-tac-toe Section -->
+  <div class="w3-padding-64 w3-content" id="tic-tac-toe">
+    <h2 class="w3-text-light-grey">Tic-tac-toe Games</h2>
+    <hr style="width:300px" class="w3-opacity">
+
+    <!-- Grid for photos -->
+    <div class="w3-row-padding" style="margin:0 -16px">
+      <div class="w3-half">
+        <div class="w3-half-element">
+          <a href="tic-tac-toe-games/balbach-tic-tac-toe.html">
+              <h2> Tic-tac-toe Game 1 </h2>
+              <img src="tic-tac-toe.PNG" style="width:90%">
+          </a>
+        </div>
+        <div class="w3-half-element">
+          <a href="tic-tac-toe-games/chen-tic-tac-toe.html">
+              <h2> Tic-tac-toe Game 3 </h2>
+              <img src="tic-tac-toe.PNG" style="width:90%">
+          </a>
+        </div>
+        <div class="w3-half-element">
+          <a href="tic-tac-toe-games/lu-tic-tac-toe.html">
+              <h2> Tic-tac-toe Game 5 </h2>
+              <img src="tic-tac-toe.PNG" style="width:90%">
+          </a>
+        </div>
+      </div>
+
+      <div class="w3-half">
+        <div class="w3-half-element">
+          <a href="tic-tac-toe-games/nickerson-tic-tac-toe.html">
+              <h2> Tic-tac-toe Game 2 </h2>
+              <img src="tic-tac-toe.PNG" style="width:90%">
+          </a>
+        </div>
+        <div class="w3-half-element">
+          <a href="tic-tac-toe-games/raza-tic-tac-toe.html">
+              <h2> Tic-tac-toe Game 4 </h2>
+              <img src="tic-tac-toe.PNG" style="width:90%">
+          </a>
+        </div>
+        <div class="w3-half-element">
+          <a href="tic-tac-toe-games/zhang-tic-tac-toe.html">
+              <h2> Tic-tac-toe Game 6 </h2>
+              <img src="tic-tac-toe.PNG" style="width:90%">
+          </a>
+        </div>
+      </div>
+    <!-- End photo grid -->
+    </div>
+  <!-- End Tic-Tac-Toe Section -->
+  </div>
+
+  <!-- Snake Section -->
+  <div class="w3-padding-64 w3-content" id="snake">
+    <h2 class="w3-text-light-grey">Snake</h2>
+    <hr style="width:300px" class="w3-opacity">
+
+    <!-- Grid for photos -->
+    <div class="w3-row-padding" style="margin:0 -16px">
+      <div class="w3-half">
+        <div class="w3-half-element">
+          <a href="snake-games/balbach-snake.html">
+              <h2> Snake Game 1 </h2>
+              <img src="snake.PNG" style="width:90%">
+          </a>
+        </div>
+        <div class="w3-half-element">
+          <a href="snake-games/chen-snake.html">
+              <h2> Snake Game 3 </h2>
+              <img src="snake.PNG" style="width:90%">
+          </a>
+        </div>
+      </div>
+
+      <div class="w3-half">
+        <div class="w3-half-element">
+          <a href="snake-games/nickerson-snake.html">
+              <h2> Snake Game 2 </h2>
+              <img src="snake.PNG" style="width:90%">
+          </a>
+        </div>
+        <div class="w3-half-element">
+          <a href="snake-games/xia-snake.html">
+              <h2> Snake Game 4 </h2>
+              <img src="snake.PNG" style="width:90%">
+          </a>
+        </div>
+      </div>
+    <!-- End photo grid -->
+    </div>
+  <!-- End Snake Section -->
+  </div>
+
+  <!-- Breakout Section -->
+  <div class="w3-padding-64 w3-content" id="breakout">
+    <h2 class="w3-text-light-grey">Breakout Games</h2>
+    <hr style="width:300px" class="w3-opacity">
+
+    <!-- Grid for photos -->
+    <div class="w3-row-padding" style="margin:0 -16px">
+      <div class="w3-half">
+        <div class="w3-half-element">
+          <a href="breakout-games/baco-gavilan-breakout.html">
+              <h2> Breakout Game 1 </h2>
+              <img src="break-out.PNG" style="width:90%">
+          </a>
+        </div>
+        <div class="w3-half-element">
+          <a href="breakout-games/balbach-breakout.html">
+              <h2> Breakout Game 3 </h2>
+              <img src="break-out.PNG" style="width:90%">
+          </a>
+        </div>
+        <div class="w3-half-element">
+          <a href="breakout-games/chen-breakout.html">
+              <h2> Breakout 5 </h2>
+              <img src="break-out.PNG" style="width:90%">
+          </a>
+        </div>
+      </div>
+
+      <div class="w3-half">
+        <div class="w3-half-element">
+          <a href="breakout-games/mdaubert-breakout.html">
+              <h2> Breakout Game 2 </h2>
+              <img src="break-out.PNG" style="width:90%">
+          </a>
+        </div>
+        <div class="w3-half-element">
+          <a href="breakout-games/pdaubert-breakout.html">
+              <h2> Breakout Game 4 </h2>
+              <img src="break-out.PNG" style="width:90%">
+          </a>
+        </div>
+        <div class="w3-half-element">
+          <a href="breakout-games/delistathis-breakout.html">
+              <h2> Breakout Game 6 </h2>
+              <img src="break-out.PNG" style="width:90%">
+          </a>
+        </div>
+      </div>
+    <!-- End photo grid -->
+    </div>
+  <!-- End Breakout Section -->
+  </div>
+
+    <!-- Footer -->
+  <footer class="w3-content w3-padding-64 w3-text-grey w3-xlarge">
+    <p class="w3-medium">Powered by <a href="https://www.w3schools.com/w3css/default.asp" target="_blank" class="w3-hover-text-green">w3.css</a></p>
+  <!-- End footer -->
+  </footer>
+
+<!-- END PAGE CONTENT -->
+</div>
+
+</body>
 </html>
